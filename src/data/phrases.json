@@ -1,0 +1,602 @@
+[
+  {
+    "id": "a-damp-squib",
+    "text": "a damp squib",
+    "meaning": "Something that turns out to be much less impressive or exciting than expected.",
+    "sourceUrl": "https://dictionary.cambridge.org/dictionary/english/damp-squib"
+  },
+  {
+    "id": "a-pig-in-a-poke",
+    "text": "a pig in a poke",
+    "meaning": "Something accepted or bought without examining it first.",
+    "sourceUrl": "https://dictionary.cambridge.org/dictionary/english/pig-in-a-poke"
+  },
+  {
+    "id": "by-hook-or-by-crook",
+    "text": "by hook or by crook",
+    "meaning": "By whatever means are necessary, even if the methods are unconventional.",
+    "sourceUrl": "https://dictionary.cambridge.org/dictionary/english/by-hook-or-by-crook"
+  },
+  {
+    "id": "at-sixes-and-sevens",
+    "text": "at sixes and sevens",
+    "meaning": "In a state of confusion or disorder.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=at+sixes+and+sevens"
+  },
+  {
+    "id": "a-cock-and-bull-story",
+    "text": "a cock and bull story",
+    "meaning": "An implausible or elaborate account that is hard to believe.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+cock+and+bull+story"
+  },
+  {
+    "id": "a-fine-kettle-of-fish",
+    "text": "a fine kettle of fish",
+    "meaning": "A difficult or awkward situation.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+fine+kettle+of+fish"
+  },
+  {
+    "id": "a-fly-in-the-ointment",
+    "text": "a fly in the ointment",
+    "meaning": "A small problem that spoils something otherwise good.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+fly+in+the+ointment"
+  },
+  {
+    "id": "a-poisoned-chalice",
+    "text": "a poisoned chalice",
+    "meaning": "A role or opportunity likely to bring serious trouble.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+poisoned+chalice"
+  },
+  {
+    "id": "a-white-elephant",
+    "text": "a white elephant",
+    "meaning": "A costly possession or project that is difficult to maintain or use.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+white+elephant"
+  },
+  {
+    "id": "an-axe-to-grind",
+    "text": "an axe to grind",
+    "meaning": "A private grievance or personal motive.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=an+axe+to+grind"
+  },
+  {
+    "id": "on-tenterhooks",
+    "text": "on tenterhooks",
+    "meaning": "Waiting anxiously for something to happen.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=on+tenterhooks"
+  },
+  {
+    "id": "beyond-the-pale",
+    "text": "beyond the pale",
+    "meaning": "Outside the limits of acceptable behavior.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=beyond+the+pale"
+  },
+  {
+    "id": "cast-aspersions",
+    "text": "cast aspersions",
+    "meaning": "Make damaging or critical remarks about someone.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=cast+aspersions"
+  },
+  {
+    "id": "dog-days-of-summer",
+    "text": "dog days of summer",
+    "meaning": "The hottest, most languid part of summer.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=dog+days+of+summer"
+  },
+  {
+    "id": "eat-humble-pie",
+    "text": "eat humble pie",
+    "meaning": "Admit you were wrong and accept embarrassment.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=eat+humble+pie"
+  },
+  {
+    "id": "fall-on-your-sword",
+    "text": "fall on your sword",
+    "meaning": "Accept responsibility or sacrifice your position after a failure.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=fall+on+your+sword"
+  },
+  {
+    "id": "gild-the-lily",
+    "text": "gild the lily",
+    "meaning": "Add unnecessary decoration to something already beautiful.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=gild+the+lily"
+  },
+  {
+    "id": "grasp-at-straws",
+    "text": "grasp at straws",
+    "meaning": "Try unlikely solutions because better options have run out.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=grasp+at+straws"
+  },
+  {
+    "id": "in-the-doldrums",
+    "text": "in the doldrums",
+    "meaning": "Feeling low or experiencing a period of inactivity.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=in+the+doldrums"
+  },
+  {
+    "id": "jump-the-shark",
+    "text": "jump the shark",
+    "meaning": "Introduce an outlandish twist that signals a decline in quality.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=jump+the+shark"
+  },
+  {
+    "id": "keep-your-powder-dry",
+    "text": "keep your powder dry",
+    "meaning": "Stay prepared and save your resources until they are needed.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=keep+your+powder+dry"
+  },
+  {
+    "id": "know-your-onions",
+    "text": "know your onions",
+    "meaning": "Be very knowledgeable about a subject.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=know+your+onions"
+  },
+  {
+    "id": "make-no-bones-about-it",
+    "text": "make no bones about it",
+    "meaning": "Speak openly or directly about something.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=make+no+bones+about+it"
+  },
+  {
+    "id": "nail-your-colours-to-the-mast",
+    "text": "nail your colours to the mast",
+    "meaning": "Declare your beliefs or allegiance firmly and publicly.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=nail+your+colours+to+the+mast"
+  },
+  {
+    "id": "no-spring-chicken",
+    "text": "no spring chicken",
+    "meaning": "No longer young.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=no+spring+chicken"
+  },
+  {
+    "id": "on-a-hiding-to-nothing",
+    "text": "on a hiding to nothing",
+    "meaning": "In a situation where success is unlikely to bring a reward.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=on+a+hiding+to+nothing"
+  },
+  {
+    "id": "on-the-horns-of-a-dilemma",
+    "text": "on the horns of a dilemma",
+    "meaning": "Forced to choose between two difficult alternatives.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=on+the+horns+of+a+dilemma"
+  },
+  {
+    "id": "put-the-kibosh-on-it",
+    "text": "put the kibosh on it",
+    "meaning": "Bring something to a stop or prevent it from happening.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=put+the+kibosh+on+it"
+  },
+  {
+    "id": "run-the-gauntlet",
+    "text": "run the gauntlet",
+    "meaning": "Face a sequence of criticisms, dangers, or difficulties.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=run+the+gauntlet"
+  },
+  {
+    "id": "steal-a-march",
+    "text": "steal a march",
+    "meaning": "Gain an unexpected advantage over a rival.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=steal+a+march"
+  },
+  {
+    "id": "the-whole-nine-yards",
+    "text": "the whole nine yards",
+    "meaning": "Everything possible; the full extent of something.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=the+whole+nine+yards"
+  },
+  {
+    "id": "throw-a-spanner-in-the-works",
+    "text": "throw a spanner in the works",
+    "meaning": "Cause an unexpected problem that disrupts a plan.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=throw+a+spanner+in+the+works"
+  },
+  {
+    "id": "tilt-at-windmills",
+    "text": "tilt at windmills",
+    "meaning": "Fight imaginary enemies or pursue unrealistic goals.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=tilt+at+windmills"
+  },
+  {
+    "id": "a-shaggy-dog-story",
+    "text": "a shaggy dog story",
+    "meaning": "A long, rambling joke or story with a deliberately anticlimactic end.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+shaggy+dog+story"
+  },
+  {
+    "id": "a-paper-tiger",
+    "text": "a paper tiger",
+    "meaning": "Someone or something that looks threatening but is actually weak.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+paper+tiger"
+  },
+  {
+    "id": "a-sticky-wicket",
+    "text": "a sticky wicket",
+    "meaning": "An awkward or difficult situation.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+sticky+wicket"
+  },
+  {
+    "id": "a-tall-order",
+    "text": "a tall order",
+    "meaning": "A request or task that is difficult to fulfill.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+tall+order"
+  },
+  {
+    "id": "batten-down-the-hatches",
+    "text": "batten down the hatches",
+    "meaning": "Prepare carefully for an approaching difficulty.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=batten+down+the+hatches"
+  },
+  {
+    "id": "bell-the-cat",
+    "text": "bell the cat",
+    "meaning": "Take on a dangerous task that everyone agrees is needed.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=bell+the+cat"
+  },
+  {
+    "id": "bring-home-the-bacon",
+    "text": "bring home the bacon",
+    "meaning": "Earn money or achieve a needed success.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=bring+home+the+bacon"
+  },
+  {
+    "id": "bury-the-hatchet",
+    "text": "bury the hatchet",
+    "meaning": "End an argument and make peace.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=bury+the+hatchet"
+  },
+  {
+    "id": "chew-the-fat",
+    "text": "chew the fat",
+    "meaning": "Chat informally, often at length.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=chew+the+fat"
+  },
+  {
+    "id": "cut-the-mustard",
+    "text": "cut the mustard",
+    "meaning": "Meet the required standard.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=cut+the+mustard"
+  },
+  {
+    "id": "face-the-music",
+    "text": "face the music",
+    "meaning": "Accept the consequences of your actions.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=face+the+music"
+  },
+  {
+    "id": "full-of-beans",
+    "text": "full of beans",
+    "meaning": "Lively and full of energy.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=full+of+beans"
+  },
+  {
+    "id": "in-fine-fettle",
+    "text": "in fine fettle",
+    "meaning": "In good health or excellent condition.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=in+fine+fettle"
+  },
+  {
+    "id": "in-the-nick-of-time",
+    "text": "in the nick of time",
+    "meaning": "At the last possible moment before it would have been too late.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=in+the+nick+of+time"
+  },
+  {
+    "id": "nip-it-in-the-bud",
+    "text": "nip it in the bud",
+    "meaning": "Stop a problem while it is still small.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=nip+it+in+the+bud"
+  },
+  {
+    "id": "off-the-beaten-track",
+    "text": "off the beaten track",
+    "meaning": "Away from places or activities that are commonly visited.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=off+the+beaten+track"
+  },
+  {
+    "id": "out-of-the-woods",
+    "text": "out of the woods",
+    "meaning": "Past the most dangerous or difficult stage.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=out+of+the+woods"
+  },
+  {
+    "id": "pull-out-all-the-stops",
+    "text": "pull out all the stops",
+    "meaning": "Use every available effort or resource.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=pull+out+all+the+stops"
+  },
+  {
+    "id": "the-penny-has-dropped",
+    "text": "the penny has dropped",
+    "meaning": "Someone has finally understood something.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=the+penny+has+dropped"
+  },
+  {
+    "id": "turn-a-blind-eye",
+    "text": "turn a blind eye",
+    "meaning": "Deliberately ignore something you know is happening.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=turn+a+blind+eye"
+  },
+  {
+    "id": "a-storm-in-a-teacup",
+    "text": "a storm in a teacup",
+    "meaning": "An exaggerated fuss over a relatively minor matter.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+storm+in+a+teacup"
+  },
+  {
+    "id": "a-red-herring",
+    "text": "a red herring",
+    "meaning": "Something that distracts attention from the real issue.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+red+herring"
+  },
+  {
+    "id": "a-wild-goose-chase",
+    "text": "a wild goose chase",
+    "meaning": "A hopeless or pointless search.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+wild+goose+chase"
+  },
+  {
+    "id": "a-blessing-in-disguise",
+    "text": "a blessing in disguise",
+    "meaning": "Something that seems bad at first but turns out to be beneficial.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+blessing+in+disguise"
+  },
+  {
+    "id": "a-flash-in-the-pan",
+    "text": "a flash in the pan",
+    "meaning": "Something briefly successful that does not last.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+flash+in+the+pan"
+  },
+  {
+    "id": "a-drop-in-the-bucket",
+    "text": "a drop in the bucket",
+    "meaning": "An amount far too small to make much difference.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+drop+in+the+bucket"
+  },
+  {
+    "id": "the-tip-of-the-iceberg",
+    "text": "the tip of the iceberg",
+    "meaning": "The small visible part of a much larger situation.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=the+tip+of+the+iceberg"
+  },
+  {
+    "id": "the-writing-on-the-wall",
+    "text": "the writing on the wall",
+    "meaning": "Clear signs that something unpleasant is likely to happen.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=the+writing+on+the+wall"
+  },
+  {
+    "id": "a-needle-in-a-haystack",
+    "text": "a needle in a haystack",
+    "meaning": "Something extremely difficult to find.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+needle+in+a+haystack"
+  },
+  {
+    "id": "barking-up-the-wrong-tree",
+    "text": "barking up the wrong tree",
+    "meaning": "Pursuing the wrong explanation or person.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=barking+up+the+wrong+tree"
+  },
+  {
+    "id": "burn-the-midnight-oil",
+    "text": "burn the midnight oil",
+    "meaning": "Work or study until late at night.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=burn+the+midnight+oil"
+  },
+  {
+    "id": "the-elephant-in-the-room",
+    "text": "the elephant in the room",
+    "meaning": "An obvious issue that everyone avoids discussing.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=the+elephant+in+the+room"
+  },
+  {
+    "id": "let-sleeping-dogs-lie",
+    "text": "let sleeping dogs lie",
+    "meaning": "Avoid restarting a conflict that has settled down.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=let+sleeping+dogs+lie"
+  },
+  {
+    "id": "a-stitch-in-time-saves-nine",
+    "text": "a stitch in time saves nine",
+    "meaning": "Fix a small problem early to prevent a much larger one later.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+stitch+in+time+saves+nine"
+  },
+  {
+    "id": "haste-makes-waste",
+    "text": "haste makes waste",
+    "meaning": "Rushing can cause errors that create more work.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=haste+makes+waste"
+  },
+  {
+    "id": "a-watched-pot-never-boils",
+    "text": "a watched pot never boils",
+    "meaning": "Waiting impatiently can make time seem to pass slowly.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+watched+pot+never+boils"
+  },
+  {
+    "id": "a-taste-of-your-own-medicine",
+    "text": "a taste of your own medicine",
+    "meaning": "The same unpleasant treatment that you gave to others.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+taste+of+your+own+medicine"
+  },
+  {
+    "id": "a-feather-in-your-cap",
+    "text": "a feather in your cap",
+    "meaning": "An achievement you can be proud of.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+feather+in+your+cap"
+  },
+  {
+    "id": "a-bitter-pill-to-swallow",
+    "text": "a bitter pill to swallow",
+    "meaning": "An unpleasant truth or setback that must be accepted.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+bitter+pill+to+swallow"
+  },
+  {
+    "id": "a-skeleton-in-the-closet",
+    "text": "a skeleton in the closet",
+    "meaning": "An embarrassing secret from the past.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+skeleton+in+the+closet"
+  },
+  {
+    "id": "the-devil-is-in-the-details",
+    "text": "the devil is in the details",
+    "meaning": "Small overlooked details can cause major difficulties.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=the+devil+is+in+the+details"
+  },
+  {
+    "id": "put-all-your-eggs-in-one-basket",
+    "text": "put all your eggs in one basket",
+    "meaning": "Risk everything on a single plan or opportunity.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=put+all+your+eggs+in+one+basket"
+  },
+  {
+    "id": "read-between-the-lines",
+    "text": "read between the lines",
+    "meaning": "Understand a meaning that is implied rather than stated.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=read+between+the+lines"
+  },
+  {
+    "id": "the-calm-before-the-storm",
+    "text": "the calm before the storm",
+    "meaning": "A quiet period before a difficult or eventful time.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=the+calm+before+the+storm"
+  },
+  {
+    "id": "throw-caution-to-the-wind",
+    "text": "throw caution to the wind",
+    "meaning": "Take a risk without worrying much about consequences.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=throw+caution+to+the+wind"
+  },
+  {
+    "id": "once-in-a-blue-moon",
+    "text": "once in a blue moon",
+    "meaning": "Very rarely; only on unusual or widely separated occasions.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=once+in+a+blue+moon"
+  },
+  {
+    "id": "at-the-drop-of-a-hat",
+    "text": "at the drop of a hat",
+    "meaning": "Immediately and without hesitation.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=at+the+drop+of+a+hat"
+  },
+  {
+    "id": "the-ball-is-in-your-court",
+    "text": "the ball is in your court",
+    "meaning": "It is your responsibility to decide what happens next.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=the+ball+is+in+your+court"
+  },
+  {
+    "id": "between-a-rock-and-a-hard-place",
+    "text": "between a rock and a hard place",
+    "meaning": "Faced with two difficult or unpleasant choices.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=between+a+rock+and+a+hard+place"
+  },
+  {
+    "id": "every-cloud-has-a-silver-lining",
+    "text": "every cloud has a silver lining",
+    "meaning": "There can be something positive in a bad situation.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=every+cloud+has+a+silver+lining"
+  },
+  {
+    "id": "a-penny-for-your-thoughts",
+    "text": "a penny for your thoughts",
+    "meaning": "A request to know what someone is thinking.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+penny+for+your+thoughts"
+  },
+  {
+    "id": "the-long-and-short-of-it",
+    "text": "the long and short of it",
+    "meaning": "The essential point or summary of a matter.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=the+long+and+short+of+it"
+  },
+  {
+    "id": "make-a-beeline",
+    "text": "make a beeline",
+    "meaning": "Go directly and quickly toward something.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=make+a+beeline"
+  },
+  {
+    "id": "paint-the-town-red",
+    "text": "paint the town red",
+    "meaning": "Go out and celebrate enthusiastically.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=paint+the+town+red"
+  },
+  {
+    "id": "tickled-pink",
+    "text": "tickled pink",
+    "meaning": "Very pleased or delighted about something.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=tickled+pink"
+  },
+  {
+    "id": "on-thin-ice",
+    "text": "on thin ice",
+    "meaning": "In a risky position where a mistake could have consequences.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=on+thin+ice"
+  },
+  {
+    "id": "under-the-weather",
+    "text": "under the weather",
+    "meaning": "Feeling slightly ill or unwell.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=under+the+weather"
+  },
+  {
+    "id": "a-piece-of-cake",
+    "text": "a piece of cake",
+    "meaning": "Something very easy to do.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+piece+of+cake"
+  },
+  {
+    "id": "time-is-money",
+    "text": "time is money",
+    "meaning": "Time has value and should not be wasted.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=time+is+money"
+  },
+  {
+    "id": "better-late-than-never",
+    "text": "better late than never",
+    "meaning": "Doing something after a delay is better than not doing it at all.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=better+late+than+never"
+  },
+  {
+    "id": "strike-while-the-iron-is-hot",
+    "text": "strike while the iron is hot",
+    "meaning": "Act while conditions are favorable.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=strike+while+the+iron+is+hot"
+  },
+  {
+    "id": "the-die-is-cast",
+    "text": "the die is cast",
+    "meaning": "A decision has been made and cannot now be undone.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=the+die+is+cast"
+  },
+  {
+    "id": "a-dead-ringer",
+    "text": "a dead ringer",
+    "meaning": "A person or thing that looks almost exactly like another.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=a+dead+ringer"
+  },
+  {
+    "id": "spill-the-beans",
+    "text": "spill the beans",
+    "meaning": "Reveal a secret or confidential information.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=spill+the+beans"
+  },
+  {
+    "id": "save-your-breath",
+    "text": "save your breath",
+    "meaning": "Stop trying to persuade someone who will not listen.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=save+your+breath"
+  },
+  {
+    "id": "the-last-straw",
+    "text": "the last straw",
+    "meaning": "The final small problem that makes a situation unbearable.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=the+last+straw"
+  },
+  {
+    "id": "take-it-with-a-grain-of-salt",
+    "text": "take it with a grain of salt",
+    "meaning": "Treat a claim skeptically rather than accepting it completely.",
+    "sourceUrl": "https://en.wiktionary.org/w/index.php?search=take+it+with+a+grain+of+salt"
+  }
+]

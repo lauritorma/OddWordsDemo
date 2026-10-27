@@ -1,0 +1,22 @@
+{
+  "name": "odd-words",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A daily phrase puzzle and endless freeplay. Six guesses. A little discovery.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "start": "node scripts/serve.mjs",
+    "preview": "node scripts/serve.mjs --dist --port 4173",
+    "dictionary": "node scripts/dictionary.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "node --test",
+    "test:watch": "node --test --watch",
+    "build": "node scripts/build.mjs",
+    "verify": "npm run check && npm test && npm run build"
+  }
+}
