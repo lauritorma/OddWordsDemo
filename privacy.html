@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#16181b">
+  <meta name="description" content="How Odd Words uses browser storage and how Vercel processes hosting requests.">
+  <meta name="referrer" content="no-referrer">
+  <title>Privacy - Odd Words</title>
+  <link rel="icon" href="./public/mark.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./src/styles.css">
+  <script type="module" src="./src/privacy.js"></script>
+</head>
+<body>
+  <a href="#privacy" class="skip-link">Skip to privacy notice</a>
+  <header class="site-header wrap"><a class="brand" href="./">ODD WORDS</a><a class="outline-button" href="./">Back to game</a></header>
+  <main id="privacy" class="wrap privacy-page">
+    <div class="eyebrow">SITE INFORMATION</div>
+    <h1>Privacy notice</h1>
+    <p>Last updated: <time datetime="2026-10-27">27 October 2026</time></p>
+    <div class="privacy-summary"><p><strong>No account is needed.</strong> Your guesses, progress and settings stay in this browser. The game does not send them to a server. Vercel, which hosts this site, processes technical information when your browser requests the site.</p></div>
+
+    <h2>What the game stores</h2>
+    <p>Odd Words uses your browser's <code>localStorage</code>, under the key <code>odd-words:v1</code>, to remember daily and freeplay rounds, unfinished guesses, the selected tile, the remaining freeplay rotation, settings, and the latest 1,000 completed results. Statistics and streaks are calculated from those results. Freeplay rounds have a random round identifier; it is kept locally and is not an advertising identifier.</p>
+    <p>This storage lets you return to an unfinished game and keep your preferences. It stays on this device and browser until you clear it or your browser removes it. There is no automatic time-based expiry. Private browsing may discard it when the session ends. Storage is separate for each site address, so progress does not transfer between domains or devices.</p>
+    <p>The game has no account system, ads, advertising profiles, location permission, microphone access, or gameplay-upload endpoint. It sets no application cookies. Sound effects are generated on your device and are off until you enable them. Browser or keyboard-provider features, such as cloud-backed typing services, are governed by your device settings rather than this game.</p>
+
+    <h2>Hosting on Vercel</h2>
+    <p>Your browser must request the page, scripts, phrase list and dictionary from the host. Vercel receives your IP address and request information. Depending on the service and configuration, hosting and security records can include the requested URL, request time, response status, browser or user-agent information, referrer when supplied, and approximate location derived from the IP address. This is different from uploading your guesses or local statistics.</p>
+    <p>This information supports delivery, reliability, diagnostics and protection against abuse. Vercel creates observability events for requests, including static files, even when the game has no analytics script. The site operator may be able to view request and security information in Vercel's dashboard, depending on the account's settings and plan.</p>
+    <p>The retention period for hosting and security records depends on the Vercel service, plan, project settings and any configured log exports. No single retention period has been verified for this deployment. Clearing game data below does not delete Vercel's records. Security checkpoints and deployment-protection features are operated separately by Vercel and depend on the host's settings.</p>
+    <p>Vercel and its service providers may process hosting information in the United States and other countries. Where applicable, its Data Processing Addendum describes processing obligations and international-transfer safeguards. The publisher is responsible for the site's configuration and notice; Vercel's own privacy notice is not a substitute for this notice.</p>
+    <p>Sources: <a href="https://vercel.com/docs/headers/request-headers" rel="noreferrer">request headers</a>, <a href="https://vercel.com/docs/observability" rel="noreferrer">Observability</a>, <a href="https://vercel.com/docs/drains/reference/logs" rel="noreferrer">log fields</a>, <a href="https://vercel.com/legal/privacy-notice" rel="noreferrer">Vercel Privacy Notice</a>, and <a href="https://vercel.com/legal/dpa" rel="noreferrer">Data Processing Addendum</a>.</p>
+
+    <h2>Analytics and external websites</h2>
+    <p>This version of the game contains no Vercel Web Analytics or Speed Insights integration, advertising pixels, session recording, or third-party fonts. Ordinary hosting logs are still processed as described above. Optional services added by the publisher through deployment settings or later code changes must be reflected in this notice.</p>
+    <p>Vercel Web Analytics is a separate, optional product. Its <a href="https://vercel.com/docs/analytics/privacy-policy" rel="noreferrer">privacy documentation</a> describes the information it processes when enabled; that does not mean it is installed in this game.</p>
+    <p>Definition links open another website only when you select them. That site receives your visit and applies its own privacy practices. Sharing copies a result to your clipboard only when you choose Copy result; the game does not publish it automatically. This site asks browsers not to send a referrer when following links.</p>
+
+    <h2>Your choices</h2>
+    <p>You can clear game data below or in Settings in the game. This removes progress, statistics and preferences from this browser, not another device or Vercel's hosting logs. Other open game tabs on the same site reset when they receive the deletion event. Playing again creates a new local save. You can also block site storage in your browser and play without persistent saves.</p>
+    <button id="clear-saved-data" class="outline-button danger-button" type="button" hidden>Clear saved data</button>
+    <p id="privacy-status" class="notice-status" role="status" aria-live="polite"></p>
+    <noscript><p>To delete game data without JavaScript, clear this site's data in your browser settings.</p></noscript>
+    <p>Depending on your location and the applicable law, you may have rights to access, correct or delete personal data, restrict or object to processing, obtain a copy, or complain to your local data-protection authority. Contact the site operator about this site's processing. Vercel's notice explains how to contact Vercel about processing for which it is responsible.</p>
+
+    <h2>Operator and contact</h2>
+    <div id="operator-contact"><p>Site operator: <strong>The site publisher</strong>.</p><p>Operator contact details have not been configured for this deployment.</p></div>
+    <p>This notice describes the supplied game and documented hosting practices. It should be updated when the site's operator, hosting configuration, or data use changes.</p>
+  </main>
+  <footer class="site-footer wrap"><span>Odd Words</span><a href="./">Back to game</a></footer>
+  <dialog id="privacy-dialog" class="modal" aria-labelledby="privacy-dialog-title"><div class="modal-inner"><div class="modal-top"><h2 id="privacy-dialog-title">Clear saved data?</h2></div><p>Your progress, statistics and settings will be deleted from this browser. This cannot be undone. Vercel hosting logs are not affected.</p><div class="modal-buttons"><button id="cancel-clear" class="outline-button" type="button" autofocus>Cancel</button><button id="confirm-clear" class="submit-button" type="button">Clear saved data</button></div></div></dialog>
+</body>
+</html>

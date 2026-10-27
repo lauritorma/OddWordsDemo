@@ -1,72 +1,97 @@
 # Verification record
 
-Release: 1.0.0. Checked on 2026-10-27.
+Release **1.1.0**, checked on **27 October 2026**.
 
 ## Executed successfully
 
-- Clean npm installation using the committed zero-dependency lockfile.
-- Syntax/import checks for every project JavaScript file.
-- 100 unique phrase IDs, 100 unique answers, 100 scheduled entries, definitions,
-  HTTPS references and full answer-word coverage in the local dictionary.
-- **80 Node tests** covering global scoring, 1,000 generated scoring cases,
-  duplicate letters, editing, validation, sixth-guess outcomes, save recovery,
-  UTC dates, fixed scheduling, shuffle-bag behavior, statistics and real local
-  HTTP requests including subpath hosting and path/write restrictions.
-- Static build into `dist/`.
-- **42 browser scenario checks**: empty/unknown submissions, natural typing
-  with spaces, duplicate submission lock, next-row activation, feedback,
-  separate modes, serialized-save recovery, freeplay skip/next, win/loss,
-  sixth-guess win, sharing fallback, statistics deduplication, motion/symbol
-  settings, on-screen input, and layouts at 320/360/393/768/1024/1440px.
-- All **99 eligible freeplay phrases** traversed without repetition or horizontal
-  overflow at **320px** and **393px**, in addition to the current daily layout.
-- Desktop and mobile screenshots inspected. Long mobile layouts were revised
-  to avoid pushing the keyboard below six full-size multiline rows.
-- No unhandled application JavaScript exceptions in those browser scenarios.
+- `npm ci` with the included zero-dependency npm lockfile.
+- JavaScript syntax and relative import checks.
+- Exactly 100 unique phrases, 100 scheduled IDs, definitions, HTTPS references
+  and dictionary coverage of every answer word; 112,795 accepted words.
+- **137 Node tests**, including all 80 original tests plus native input,
+  composition, deletion, privacy contact escaping, palette contrast, optional
+  audio, privacy-page serving and response headers.
+- A fresh production build including the privacy page, data and dictionary.
+- **75 Chromium interaction checks**, including desktop and emulated phone
+  typing, selection, deletion, word boundaries, incomplete/invalid guesses,
+  valid wrong guesses, win/loss, results, dialog focus, clear-data confirmations,
+  privacy, device-keyboard-sized viewports, landscape touch behavior and audio
+  opt-in. See `browser-check-results.json` for individual assertions.
+- **All 100 phrases at 320px and 393px widths**, checked for document/board
+  horizontal overflow and selected-cell visibility. Each collection traversal
+  visited 100 distinct phrases. See `layout-check-320.json` and
+  `layout-check-393.json`.
+- Screenshots of the new desktop, mobile, privacy, result and compact keyboard-
+  viewport layouts were generated; primary layouts were visually inspected.
+- No unhandled application JavaScript errors in those browser checks. Browser
+  requests during those checks were limited to the supplied application files.
 
-## Exact testing boundary
+## Exact boundaries
 
-The execution environment had Node 22.16.0 and Chromium. Its browser enterprise
-policy blocked *all URL navigation*, including localhost. Browser scenarios
-therefore used the actual application modules/styles in an inline local-file
-transport harness, with import URLs rewritten to local blobs, fetch responses
-provided from the project files, and a small in-memory Storage adapter.
+Node 22.16.0 and Chromium were available in the build environment. Browser
+enterprise policy blocked URL navigation, including localhost. The browser
+checks therefore use `page.set_content`, a local base URL and Playwright routes
+that serve the actual, unmodified application modules, styles and data from
+this repository. No game rules or rendering implementation are substituted.
+A small in-memory Storage adapter substitutes for native localStorage because
+an about:blank document has no normal site origin.
 
-No game rules, rendering code, animation library or framework were substituted
-(the application has no framework dependency). The adapter does mean that
-native browser storage behavior, network delivery and the complete Windows
-localhost path were **not** tested end to end. Restoration tests passed by
-serializing a save and loading it into a fresh browser page. The HTTP server
-was separately tested against real Node requests. This is not a claim of
-full cross-browser, Windows, accessibility or GitHub deployment certification.
+This verifies UI behavior under that transport, not native persistent browser
+storage or a complete browser-to-host network path. Real HTTP serving and
+subpath routes are covered separately by Node's integration tests. Storage
+restoration/validation is also covered by the original Node tests.
 
-The repo includes CI for Windows and Linux, but those GitHub-hosted jobs have
-not run on a user's remote repository yet. Optional sound synthesis was
-implemented; audio quality was not judged by listening in this environment.
+Mobile viewport and touch emulation **do not display a real iOS or Android
+keyboard**. Input, beforeinput, composition and key events were exercised, and
+a reduced visual viewport was tested. Physical phone/OS keyboard behavior,
+autocorrection edge cases, Safari, Firefox, assistive technology and actual
+browser storage should still be checked on devices. Contrast tests cover the
+specified palette combinations; they are not a full WCAG audit.
 
-## Reproduce the automated project checks
+Audio tests verify that audio is opt-in, browser audio contexts/oscillators are
+created after enabling it, and unsupported audio does not break the game.
+The sounds were not evaluated by listening in this environment.
 
-```powershell
-npm.cmd ci
-npm.cmd run verify
+A user's Vercel project, live site and remote GitHub Actions were not accessed.
+The configuration/build are included, but no live deployment is claimed.
+
+## Reproduce Node checks
+
+```sh
+npm ci
+npm run verify
 ```
 
-This runs the 80 Node tests and real project checks/build without browser test
-packages. The environment-specific inline browser harness is not a runtime
-or build dependency of the repository.
+Use `npm.cmd` on Windows PowerShell when needed.
 
-## Final checks on your Windows machine
+## Optional browser regression harness
 
-1. Start `npm.cmd run dev -- --open`; confirm the game loads at localhost:5173.
-2. Submit an incomplete row and invented words. Neither should spend a guess.
-3. Submit a valid mismatching phrase and verify feedback/next-row progression.
-4. Enter part of a new row, refresh, and confirm native storage preserves it.
-5. Switch modes and return; check both drafts. Complete and skip freeplay rounds.
-6. Solve a phrase on attempt six; check the victory animation and definition.
-7. Enable Windows reduced motion, then check the result appears without motion.
-8. Toggle audio only after a user action; check sound is comfortable and optional.
-9. Check keyboard-only navigation and the dialogs with your preferred screen reader.
-10. Run `npm.cmd run build`, then `npm.cmd run preview -- --open` to check the
-    static build on its separate origin. Its save history is intentionally separate.
-11. After enabling GitHub Pages, run the deployment workflow and check the actual
-    project URL, dictionary fetch and refresh behavior there.
+Python and Playwright are needed **only** for these checks, not for the game.
+From the project root:
+
+```sh
+python -m pip install -r qa/requirements.txt
+python -m playwright install chromium
+python qa/browser_interactions.py
+python qa/phrase_layout.py 320
+python qa/phrase_layout.py 393
+```
+
+The harness intentionally uses the file transport and simulated storage
+described above. It produces the JSON verification files and screenshots in
+`docs/`. It uses an installed `chromium` binary when available, otherwise the
+Playwright-installed browser; `CHROMIUM_EXECUTABLE` can specify a binary.
+
+## Physical-device and deployment checklist
+
+On the actual HTTPS deployment, check that tapping a tile opens the phone
+keyboard; typing advances once, backspace works, selecting another word keeps
+the keyboard open, and Submit remains reachable. Test rotation, keyboard
+show/hide, paste and a long phrase. Confirm the virtual game keyboard stays
+hidden on the phone and remains available on desktop.
+
+Check sound levels with the mute control, refresh to verify real saved-game
+recovery, and clear saved data while another game tab is open. Verify the
+privacy/contact details without JavaScript. Inspect Network and Storage for
+host-added integrations, cookies or unexpected external requests. Confirm
+Vercel's actual logging settings and retention before finalizing the notice.

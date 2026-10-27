@@ -7,8 +7,9 @@ export function staticServer(root, base = '/') {
   if (!base.startsWith('/') || !base.endsWith('/')) throw new Error('Base must start and end with /.');
   return createServer(async (request, response) => {
     response.setHeader('X-Content-Type-Options', 'nosniff');
-    response.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.setHeader('Referrer-Policy', 'no-referrer');
     response.setHeader('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'");
+    response.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
     response.setHeader('Cache-Control', 'no-cache');
     if (!['GET', 'HEAD'].includes(request.method)) { response.writeHead(405, { Allow: 'GET, HEAD' }); response.end('Method not allowed'); return; }
     try {
@@ -16,7 +17,7 @@ export function staticServer(root, base = '/') {
       if (!pathname.startsWith(base)) { response.writeHead(404); response.end('Not found'); return; }
       let relative = pathname.slice(base.length);
       if (!relative) relative = 'index.html';
-      const allowed = relative === 'index.html' || /^(src|public|licenses)\//.test(relative);
+      const allowed = ['index.html', 'privacy.html'].includes(relative) || /^(src|public|licenses)\//.test(relative);
       const filename = path.resolve(absoluteRoot, relative);
       if (!allowed || !filename.startsWith(absoluteRoot + path.sep) || relative.includes('\\') || relative.includes('\0')) { response.writeHead(404); response.end('Not found'); return; }
       const info = await stat(filename);

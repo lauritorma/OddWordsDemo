@@ -1,8 +1,8 @@
 {
   "name": "odd-words",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
-  "description": "A daily phrase puzzle and endless freeplay. Six guesses. A little discovery.",
+  "description": "A daily phrase puzzle with six guesses and unlimited freeplay.",
   "type": "module",
   "license": "MIT",
   "engines": {

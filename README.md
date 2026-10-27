@@ -1,180 +1,186 @@
 # Odd Words
 
-**Real words. Odd combinations. Six shots.**
+A daily phrase puzzle with six guesses and unlimited freeplay. Built with
+plain JavaScript, CSS and Node's built-in tools. No runtime packages, accounts,
+API keys, database, or external dictionary service are required.
 
-A browser-based phrase puzzle with one shared daily challenge and unlimited
-freeplay. Solve an expression, then discover what it means. The interface is
-inspired by a compact game console: dark olive surfaces, lime controls,
-physical-looking keys and restrained pixel-like effects.
-
-![Odd Words desktop game](docs/images/desktop.png)
+![Desktop game](docs/images/desktop.png)
 
 ## Run locally
 
-Use Node.js 24 LTS (Node.js 22.12+ is also supported). No accounts, API keys,
-Python, database, or third-party npm packages are required.
+Use Node.js **22.12 or newer**. The included `.nvmrc` selects Node 24.
 
-```powershell
-npm.cmd ci
-npm.cmd run verify
-npm.cmd run dev -- --open
+```sh
+npm ci
+npm run verify
+npm run dev -- --open
 ```
 
-Open **http://localhost:5173**. Keep the terminal open. Stop with **Ctrl+C**.
-After changing source files, refresh the browser; this small development
-server deliberately does not introduce a hot-reload framework.
+Open `http://localhost:5173`. Refresh after editing files; this development
+server does not include hot reload. Stop it with Ctrl+C. On Windows PowerShell,
+use `npm.cmd` in place of `npm` if script execution is restricted. See
+[START-HERE-WINDOWS.md](START-HERE-WINDOWS.md).
 
-On macOS or Linux, use `npm` instead of `npm.cmd`.
+## Updating your existing repository
 
-**This is a complete standalone project.** Do not copy its files over an old
-React/Vite project. Extract or clone it into a fresh folder. See
-[START-HERE-WINDOWS.md](START-HERE-WINDOWS.md) for exact Windows and Git commands.
+This is the updated version of the uploaded **Odd Words** project, not a new
+framework or replacement prototype. Back up your work, then copy the extracted
+project files into your existing Odd Words repository. Keep its `.git` folder
+and remote configuration. This archive intentionally contains no Git history,
+credentials, `node_modules`, or external font files.
 
-## The game
+The save format and key, `odd-words:v1`, are unchanged. Existing valid saves
+continue working when the updated site uses the same domain and browser.
+The 100 phrases, their meanings, daily schedule and dictionary are preserved.
 
-- Six valid whole-phrase guesses. Every word must match its tile count and be
-  in the local English word list; the complete phrase may be nonsensical.
-- Green means the correct position. Yellow means elsewhere anywhere in the
-  phrase, including another word. Gray means no matching occurrence remains.
-  Exact matches are reserved before yellows, so repeated letters are counted
-  correctly.
-- Physical keyboard, on-screen keys, tile selection, cursor controls and
-  whole-phrase paste. Invalid words and unfinished rows do not spend a guess.
-- Tile reveals, a victory wave and confetti. Optional synthesized audio;
-  reduced-motion preferences are respected. Feedback symbols are enabled by
-  default, so information is not conveyed by colour alone.
-- A definition and a further-reading link after a win, loss or freeplay reveal.
-- Exactly **100 unique phrases** in `src/data/phrases.json` and a bundled local
-  dictionary of **112,795 accepted words** in this release.
-- Separate daily and freeplay saves, including unfinished guesses, settings,
-  statistics, daily streaks and spoiler-free result sharing.
+## What changed in 1.1.0
 
-### Daily
+- **Mobile input:** the game keyboard is hidden on narrow screens and primary
+  touch devices, including landscape. Tap a tile or **Open keyboard** to use
+  your device keyboard. A strong outline, underline, highlighted word and
+  word/letter position label identify the active cell. Future rows are compact;
+  the board scrolls to the selected tile without shrinking every word.
+- **Presentation:** plain copy, charcoal surfaces, warm white text, muted gold
+  controls, and readable green/amber/gray feedback. Feedback symbols are on by
+  default. System reduced-motion preferences remain supported.
+- **Privacy:** a standalone, readable-without-JavaScript privacy notice,
+  linked from the footer and Settings. It distinguishes local saves from
+  Vercel hosting records. Clear saved data removes only this game's key and
+  resets other open game tabs when they receive the deletion event.
+- **Sound:** quiet synthesized cues for typing, deleting, submission, invalid
+  guesses, wins and losses. Sound is off by default; the header and Settings
+  offer an explicit toggle. No audio files or microphone permission are used.
 
-A fixed schedule selects the same phrase for the same UTC date on every
-installation with the same data. The reset is **00:00 UTC**. An open page
-updates when the UTC date changes. The schedule starts on **2026-10-27** and
-repeats after 100 days; it is a demo collection, not an infinite content feed.
+![Mobile game](docs/images/mobile.png)
 
-The schedule contains explicit IDs, separate from the phrase collection.
-Reordering `phrases.json` therefore does not change assignments. Changing the
-schedule itself can change past and future puzzles.
+## Before publishing the privacy notice
 
-### Freeplay
+Edit **`src/site-config.js`** with your public operator name and privacy contact
+email, then rebuild. The build inserts these details into the static notice,
+so they also work without JavaScript. Do not put credentials in this file.
 
-Freeplay uses a shuffled bag. It excludes the current daily answer when drawing
-new phrases and does not repeat a phrase until the eligible bag is exhausted.
-The immediately previous phrase is also excluded at a refill. Daily and
-freeplay rounds stay separate. Revealing/skipping a freeplay round shows its
-meaning and does not count as a loss.
+Review your Vercel project's analytics, Speed Insights, security, deployment
+protection and log-export settings. They cannot be established from the
+repository. The supplied app contains no analytics integration, but Vercel
+still processes hosting requests. Retention depends on the service and actual
+configuration; no fixed retention period is invented in the notice.
+
+See [docs/PRIVACY.md](docs/PRIVACY.md) for the source references and publishing
+checklist. The build warns when operator details are missing; it does not
+prevent local development.
+
+## Vercel deployment
+
+The included `vercel.json` uses:
+
+| Setting | Value |
+| --- | --- |
+| Framework preset | Other / no framework |
+| Build command | `npm run build` |
+| Output directory | `dist` |
+| Install command | `npm ci` or the detected default |
+
+Keep the existing Git integration and push the updated source. The build copies
+`index.html`, `privacy.html`, `src/`, `public/`, and license notices into `dist/`.
+That includes **`public/dictionary/english.txt`**, all 100 phrases, the daily
+schedule, native-input code and local sound code. No server functions or
+environment variables are needed. Do not deploy only `index.html`.
+
+To inspect the exact production files locally:
+
+```sh
+npm run build
+npm run preview -- --open
+```
+
+The preview is at `http://localhost:4173` and has its own local save, separate
+from port 5173 and your production domain. The ZIP includes a rebuilt `dist/`
+for convenience; `.gitignore` keeps generated output out of Git. Vercel rebuilds
+it from source. Relative asset paths continue to support repository-subpath
+hosting. Optional GitHub Pages workflows are retained.
+
+## Game rules
+
+Every submitted word must match its tile count and appear in the local word
+list. The whole guess does not have to form a meaningful expression. Incomplete
+or unknown-word guesses do not spend an attempt.
+
+Green / **+** means the correct letter and position. Amber / **~** means the
+letter occurs elsewhere in the phrase, including another word. Gray / **-**
+means no matching copy remains. Exact matches are assigned before other
+matches, so repeated letters are counted correctly.
+
+Daily puzzles reset at **00:00 UTC** using the unchanged schedule, which starts
+on 2026-10-27 and repeats every 100 days. Freeplay uses a shuffled bag and keeps
+its progress separate from Daily. Revealing/skipping a freeplay round does not
+count as a loss. The definition and a reference link appear at the end.
+
+Desktop supports physical and on-screen keyboards. On a phone, use the native
+keyboard. Enter submits, Backspace deletes, arrows move, and Space advances to
+the next word. Select a tile to replace its letter. Paste a whole phrase with
+matching word lengths. The latest 1,000 completed results are stored locally.
 
 ## Commands
 
 | Command | Purpose |
 | --- | --- |
-| `npm run dev -- --open` | Start localhost:5173 and open the browser |
-| `npm run dev -- --port 5174` | Use another local port |
-| `npm run check` | Check JS syntax/imports, phrases, schedule and dictionary |
-| `npm test` | Run 80 automated tests with Node's built-in runner |
-| `npm run test:watch` | Re-run tests when files change |
-| `npm run dictionary` | Rebuild the local dictionary from bundled sources |
-| `npm run build` | Validate and create the static `dist/` site |
-| `npm run verify` | Run checks, tests and the build |
-| `npm run preview -- --open` | Preview `dist/` at localhost:4173 |
+| `npm run dev -- --open` | Start development server and open browser |
+| `npm run dev -- --port 5174` | Use another port |
+| `npm run check` | Validate syntax, imports, content and dictionary |
+| `npm test` | Run the built-in Node test suite |
+| `npm run test:watch` | Re-run Node tests on changes |
+| `npm run dictionary` | Rebuild dictionary from bundled source |
+| `npm run build` | Validate and produce static `dist/` |
+| `npm run verify` | Run checks, tests and build |
+| `npm run preview -- --open` | Preview `dist/` at port 4173 |
 
-`npm ci` works without downloading packages because there are no dependency
-entries. The lockfile is included to keep the repository and CI reproducible.
+`npm ci` has no third-party npm packages to download. Optional browser QA has
+separate Python/Playwright requirements and is **not** needed to run, build,
+verify with Node, or deploy the game.
 
-## Structure
+## Project structure
 
 ```text
-odd-words/
-  index.html
-  src/
-    main.js                 Application controller, rendering and input
-    styles.css              Responsive console-style interface
-    data/
-      phrases.json          Exactly 100 answer entries and meanings
-      daily-schedule.json   Fixed date-to-ID rotation
-      custom-words.txt       Reviewed dictionary additions
-    lib/
-      game.js               Pure scoring, editing and round rules
-      puzzles.js            UTC selection and freeplay shuffle bag
-      storage.js            Save recovery and statistics
-      dictionary.js         Word-list parser
-      effects.js            Victory particles and optional sound
-  public/
-    mark.svg                Original logo/favicon
-    dictionary/english.txt  Ready-to-use local word list
-  scripts/                  Cross-platform server, checks and build
-  tests/                    Node unit and HTTP integration tests
-  vendor/scowl/             Bundled dictionary source and affix rules
-  licenses/                 Third-party notices
-  .github/workflows/        Windows/Linux CI and optional Pages deployment
+index.html                    Game page
+privacy.html                  Privacy notice
+src/main.js                   Game controller and UI
+src/styles.css                Responsive styles and colour tokens
+src/site-config.js            Public operator/contact details
+src/privacy.js                Privacy-page controls
+src/lib/native-input.js       Mobile input and composition handling
+src/lib/effects.js            Local audio and victory particles
+src/lib/game.js                Pure game rules
+src/lib/storage.js             Saves, deletion and statistics
+src/data/phrases.json          100 phrases and meanings
+src/data/daily-schedule.json   Fixed daily rotation
+public/dictionary/english.txt Bundled 112,795-word dictionary
+scripts/                      Local server, validation and build
+tests/                        Node tests
+qa/                           Optional browser regression harness
+docs/                         Setup, privacy and verification notes
+vercel.json                   Static deployment and response headers
 ```
 
-## Technical choices
+## Verification and limits
 
-Native browser ES modules and CSS; Node built-ins for the server, tests and
-build. There is no transpiler, framework runtime, server-side database or
-external gameplay request. This repository replaces, rather than extends,
-the earlier React/Vite prototype. Pure rules remain separate from rendering
-so the game can be moved into a framework later without changing its rules.
+The delivered revision passes **137 Node tests**, **75 Chromium interaction
+checks**, and **all 100 phrases at both 320px and 393px widths** without
+horizontal overflow. Colour token combinations have automated contrast checks.
+See [docs/VERIFICATION.md](docs/VERIFICATION.md) for exact coverage and limits.
 
-The build copies the validated browser files into `dist/`. It is deliberately
-not a minifier, obfuscator, or anti-cheat system. All URLs are relative so the
-same output works under a repository path on GitHub Pages.
+Chromium UI checks used the real application files through a local-file
+transport harness with an in-memory storage adapter because this environment
+blocks browser navigation. HTTP serving was tested separately with real Node
+requests. Native phone keyboards on physical iOS/Android devices, screen-reader
+behavior, actual Vercel settings and a live deployment still require checking.
+This is not a full accessibility or legal-compliance certification.
 
-## Content and customization
-
-Edit `src/data/phrases.json` for phrases and meanings. See
-[docs/CONTENT.md](docs/CONTENT.md) before changing scheduled IDs or vocabulary.
-Run `npm run dictionary` after adding answer vocabulary or custom words, then
-`npm run verify`. The release check intentionally enforces 100 unique phrases.
-
-Adjust the CSS custom properties at the start of `src/styles.css` to change
-the palette. The name is in `index.html`, `src/main.js`, `package.json`, and the
-original `public/mark.svg` logo. The current name is a working project title;
-no trademark clearance is implied.
-
-## GitHub and deployment
-
-The repository includes an MIT license for the original code, a `.gitignore`,
-editor settings, source attribution, and GitHub Actions. CI verifies the project
-on Windows and Linux after a push or pull request.
-
-For a live site, choose **Settings > Pages > Source > GitHub Actions**, then run
-**Actions > Deploy GitHub Pages > Run workflow**. Deployment is manual so a
-first push does not fail simply because Pages has not been enabled. Re-run
-that workflow after changes you want to publish.
-
-For another static host, publish `dist/`. There is no production Node server
-requirement. The supplied local server is a development/preview tool, not a
-hardened Internet-facing application server.
-
-## Verification and boundaries
-
-`npm run verify` passed in the build environment: 80 tests plus data, syntax,
-import and build checks. UI verification also exercised 42 scenarios in
-Chromium and every eligible freeplay phrase at 320px and 393px widths.
-
-The browser environment blocked all URL navigation, so UI checks loaded the
-actual modules through an inline file-transport harness with in-memory
-storage. That verifies rendering and interactions, not native localStorage or
-a real Windows browser session. The local HTTP server was separately tested
-through real Node HTTP requests. Details and remaining manual checks are in
-[docs/VERIFICATION.md](docs/VERIFICATION.md).
-
-The answers are public client-side data. Device clocks can be changed. Saves
-are local to the browser and origin (including port); private browsing or
-clearing site data can remove them. There is no account synchronization,
-shared leaderboard, anti-cheat guarantee, service worker, or cross-tab conflict
-resolution. The latest 1,000 completed rounds are kept. Use one active game tab
-when preserving progress matters.
+Answers are intentionally public client-side data. There is no anti-cheat
+system, cloud save, account synchronization, service worker, or general
+cross-tab save-conflict resolution. The game follows the device clock.
 
 ## License
 
-Original project code and visuals: [MIT](LICENSE). Dictionary data retains its
-own permissions and notices: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and
-[licenses/SCOWL.txt](licenses/SCOWL.txt). Dictionary references do not imply
-endorsement. No font files or external art are included.
+Original code and visuals: [MIT](LICENSE). Dictionary sources retain their own
+notices: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and
+[licenses/SCOWL.txt](licenses/SCOWL.txt).

@@ -2,67 +2,80 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#111610">
-  <meta name="description" content="Uncover a curious English phrase in six guesses. One daily challenge, endless freeplay, and something new to discover.">
-  <title>Odd Words - A daily phrase puzzle</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#16181b">
+  <meta name="description" content="Guess an English phrase in six attempts. Play the daily puzzle or choose a random phrase in freeplay.">
+  <meta name="referrer" content="no-referrer">
+  <title>Odd Words - Daily phrase puzzle</title>
   <link rel="icon" href="./public/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./src/styles.css">
   <script type="module" src="./src/main.js"></script>
 </head>
 <body>
-  <a href="#game" class="skip-link">Skip to the puzzle</a>
+  <a href="#game" class="skip-link">Skip to puzzle</a>
   <header class="site-header wrap">
     <a class="brand" href="./" aria-label="Odd Words home">
       <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M2 2h16v16H2zm20 0h16v16H22zM2 22h16v16H2z" fill="currentColor"/><path d="m22 22 16 16m0-16L22 38" stroke="currentColor" stroke-width="5"/></svg>
-      <span>ODD WORDS<span class="brand-sub">A DAILY PHRASE PUZZLE</span></span>
+      <span>ODD WORDS<span class="brand-sub">DAILY PHRASE PUZZLE</span></span>
     </a>
-    <nav class="header-actions" aria-label="Game information">
-      <button class="text-button help-button" data-action="help">HOW TO PLAY <span class="keycap">?</span></button>
+    <nav class="header-actions" aria-label="Game controls">
+      <button class="icon-button sound-button" data-action="sound" aria-label="Turn sound on" aria-pressed="false" title="Sound off">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="sound-on" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-off" d="m16 9 5 6m0-6-5 6"/></svg>
+      </button>
+      <button class="icon-button" data-action="help" aria-label="How to play" title="How to play"><span aria-hidden="true">?</span></button>
       <button class="icon-button" data-action="stats" aria-label="View statistics" title="Statistics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V12h4v8m2 0V4h4v16m2 0V8h4v12"/></svg></button>
       <button class="icon-button" data-action="settings" aria-label="Open settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M9 4v6m6 4v6"/></svg></button>
     </nav>
   </header>
   <main class="wrap">
     <div class="intro">
-      <div><div class="eyebrow"><span class="live-dot"></span> A SMALL DAILY OBSESSION</div><h1>Crack the phrase<span class="accent">.</span></h1><p>Real words. Odd combinations. Six shots.</p></div>
-      <button class="record-strip" data-action="stats" aria-label="View your game statistics"><span><strong id="streak">00</strong><small>DAILY STREAK</small></span><span><strong id="total-wins">00</strong><small>PHRASES SOLVED</small></span></button>
+      <div><h1>Guess the phrase.</h1><p>Six guesses. Use a real word in each group of tiles.</p></div>
+      <button class="record-strip" data-action="stats" aria-label="View your statistics"><span><strong id="streak">00</strong><small>Daily streak</small></span><span><strong id="total-wins">00</strong><small>Solved</small></span></button>
     </div>
     <div class="mode-bar">
       <div class="mode-switch" role="group" aria-label="Game mode">
-        <button id="daily-mode" data-mode="daily" class="mode selected" aria-pressed="true"><span class="mode-number">01</span> DAILY <span class="mode-detail">ONE FOR EVERYONE</span></button>
-        <button id="freeplay-mode" data-mode="freeplay" class="mode" aria-pressed="false"><span class="mode-number">02</span> FREEPLAY <span class="mode-detail">NO LIMITS</span></button>
+        <button id="daily-mode" data-mode="daily" class="mode selected" aria-pressed="true">Daily<span class="mode-detail">One puzzle a day</span></button>
+        <button id="freeplay-mode" data-mode="freeplay" class="mode" aria-pressed="false">Freeplay<span class="mode-detail">Random phrases</span></button>
       </div>
-      <span class="edition" id="edition">100 PHRASES / SIX GUESSES</span>
+      <span class="edition" id="edition">100 phrases</span>
     </div>
-    <p id="loading" class="loading" role="status">Opening the phrase vault...</p>
+    <p id="loading" class="loading" role="status">Loading puzzle...</p>
     <div class="play-layout" id="play-layout" hidden>
       <section class="console" id="game" tabindex="-1" aria-labelledby="puzzle-label">
-        <div class="console-head"><div><span class="micro" id="puzzle-mode">DAILY CHALLENGE</span><h2 id="puzzle-label">PUZZLE 001</h2></div><div class="attempt-counter"><span class="micro" id="attempt-label">ATTEMPT 01 / 06</span><div id="attempt-pips" class="pips" aria-hidden="true"></div></div></div>
-        <div id="board" class="board" aria-label="Phrase guesses"></div>
+        <div class="console-head"><div><span class="micro" id="puzzle-mode">DAILY</span><h2 id="puzzle-label">Puzzle 001</h2></div><div class="attempt-counter"><span class="micro" id="attempt-label">GUESS 01 / 06</span><div id="attempt-pips" class="pips" aria-hidden="true"></div></div></div>
+        <div class="board-shell">
+          <div id="board" class="board" aria-label="Phrase guesses"></div>
+          <!-- This input is persistent: replacing it during a render closes phone keyboards. -->
+          <input id="native-input" class="native-input" type="text" inputmode="text" enterkeyhint="go" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="Type letters for the selected tile" aria-describedby="input-position input-help" tabindex="-1">
+        </div>
+        <div class="input-status" id="input-status"><span class="position-dot" aria-hidden="true"></span><span id="input-position">Word 1, letter 1</span><button class="text-button native-only" id="type-button" data-action="type">Open keyboard</button></div>
+        <p id="input-help" class="sr-only">Tap a tile to select it and type. Letters advance automatically. Backspace deletes a letter. Use Submit guess when the row is complete.</p>
         <div id="message" class="message" role="status" aria-live="polite" aria-atomic="true">Type a word into each group of tiles.</div>
-        <div class="entry-controls"><div class="edit-controls"><button class="small-button" data-key="ArrowLeft" aria-label="Previous tile">&larr;</button><button class="small-button" data-key="ArrowRight" aria-label="Next tile">&rarr;</button><button class="small-button clear-button" data-key="Clear">CLEAR</button></div><button class="submit-button" id="submit" data-key="Enter"><span>SUBMIT GUESS</span><span aria-hidden="true">&#8629;</span></button></div>
+        <div class="entry-controls"><div class="edit-controls"><button class="small-button" data-key="ArrowLeft" aria-label="Previous tile">&larr;</button><button class="small-button" data-key="ArrowRight" aria-label="Next tile">&rarr;</button><button class="small-button" data-key="Backspace" aria-label="Delete letter">&#9003;</button><button class="small-button clear-button" data-key="Clear">Clear</button></div><button class="submit-button" id="submit" data-key="Enter"><span>Submit guess</span><span aria-hidden="true">&#8629;</span></button></div>
         <div class="keyboard" id="keyboard" aria-label="On-screen keyboard"></div>
-        <div class="console-foot"><span id="save-state"><span class="save-dot"></span> SAVED ON THIS DEVICE</span><span>KEYBOARD OR TAP TO PLAY</span></div>
+        <div class="console-foot"><span id="save-state"><span class="save-dot"></span>Saved on this device</span><span class="desktop-hint">Enter to submit</span></div>
       </section>
       <aside class="side-panel" aria-label="Round information">
         <section class="briefing" id="briefing">
-          <div class="panel-label"><span>FIELD GUIDE</span><span>06 / MAX</span></div>
-          <h2>A little strange.<br>A little brilliant.</h2>
-          <p>Find the hidden expression. Every guess must use real English words, but the combination can be nonsense.</p>
-          <div class="legend"><div><span class="example-tile correct">A<small>+</small></span><span><strong>RIGHT ON</strong><small>Right letter. Right place.</small></span></div><div><span class="example-tile present">B<small>~</small></span><span><strong>SOMEWHERE ELSE</strong><small>It belongs elsewhere in the phrase.</small></span></div><div><span class="example-tile absent">C<small>-</small></span><span><strong>NOT THIS ONE</strong><small>No matching copy left.</small></span></div></div>
-          <div class="pattern"><span class="micro">WORD PATTERN</span><strong id="word-pattern"></strong><span class="micro" id="phrase-size"></span></div>
-          <div id="daily-clock" class="clock"><span class="micro">NEXT DAILY PUZZLE</span><strong id="countdown">00:00:00</strong><span class="micro">RESETS AT 00:00 UTC</span></div>
-          <div id="freeplay-note" hidden><p class="freeplay-caption">Random picks from the vault. No repeats until the current bag runs out.</p><button class="outline-button full" data-action="skip">REVEAL &amp; SKIP <span>&rarr;</span></button></div>
+          <h2>How it works</h2>
+          <p>Match the word lengths. After each guess, the tiles show which letters fit.</p>
+          <div class="legend">
+            <div><span class="example-tile correct" aria-hidden="true">A<small>+</small></span><span><strong>Correct</strong><small>Right letter, right place.</small></span></div>
+            <div><span class="example-tile present" aria-hidden="true">B<small>~</small></span><span><strong>Elsewhere</strong><small>In another position in the phrase.</small></span></div>
+            <div><span class="example-tile absent" aria-hidden="true">C<small>-</small></span><span><strong>No match</strong><small>No matching copy remains.</small></span></div>
+          </div>
+          <div class="pattern"><span class="micro">WORD LENGTHS</span><strong id="word-pattern"></strong><span class="micro" id="phrase-size"></span></div>
+          <div id="daily-clock" class="clock"><span class="micro">NEXT DAILY PUZZLE</span><strong id="countdown">00:00:00</strong><span class="micro">Resets at 00:00 UTC</span></div>
+          <div id="freeplay-note" hidden><p class="freeplay-caption">100 phrases in a shuffled rotation.</p><button class="outline-button full" data-action="skip">Reveal and skip <span aria-hidden="true">&rarr;</span></button></div>
         </section>
         <section id="result" class="result" tabindex="-1" hidden aria-label="Round result"></section>
-        <div class="discovery-note"><span class="note-icon" aria-hidden="true">[?]</span><p><strong>THERE'S A STORY IN THERE.</strong>Finish the round to discover what the phrase actually means.</p></div>
+        <p class="discovery-note">The definition appears at the end of the round.</p>
       </aside>
     </div>
-    <footer class="site-footer"><span>100 EXPRESSIONS. A FEW RAISED EYEBROWS.</span><span>NO LOGIN. JUST LETTERS. <span class="footer-mark">OW / 1.0</span></span></footer>
+    <footer class="site-footer"><span>Odd Words <span class="footer-mark">/ 100 phrases</span></span><nav aria-label="Site information"><a href="./privacy.html">Privacy</a><button class="text-button" data-action="help">How to play</button></nav></footer>
   </main>
   <dialog id="modal" class="modal" aria-labelledby="modal-title"></dialog>
   <canvas id="confetti" aria-hidden="true"></canvas>
-  <noscript><p class="noscript">Odd Words needs JavaScript to play. Enable it and reload this page.</p></noscript>
+  <noscript><p class="noscript">Enable JavaScript to play Odd Words. The <a href="./privacy.html">privacy notice</a> works without it.</p></noscript>
 </body>
 </html>

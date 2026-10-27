@@ -10,6 +10,11 @@ export function writeSave(storage, data) {
   try { storage.setItem(STORAGE_KEY, JSON.stringify({ ...data, version: 1 })); return true; }
   catch { return false; }
 }
+/** Remove only this game's save, never other applications' storage. */
+export function clearSave(storage) {
+  try { storage.removeItem(STORAGE_KEY); return true; }
+  catch { return false; }
+}
 export function cleanHistory(history) {
   if (!Array.isArray(history)) return [];
   return history.filter((r) => r && typeof r.key === 'string' && ['daily', 'free'].includes(r.mode) && /^\d{4}-\d{2}-\d{2}$/.test(r.date) && ['won', 'lost'].includes(r.status) && Number.isInteger(r.guesses) && r.guesses >= 1 && r.guesses <= 6).slice(-1000);
