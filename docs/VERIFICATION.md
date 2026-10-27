@@ -1,6 +1,6 @@
 # Verification record
 
-Release **1.1.0**, checked on **27 October 2026**.
+Release **1.2.0**, checked on **27 October 2026**.
 
 ## Executed successfully
 
@@ -8,21 +8,24 @@ Release **1.1.0**, checked on **27 October 2026**.
 - JavaScript syntax and relative import checks.
 - Exactly 100 unique phrases, 100 scheduled IDs, definitions, HTTPS references
   and dictionary coverage of every answer word; 112,795 accepted words.
-- **137 Node tests**, including all 80 original tests plus native input,
+- **143 Node tests**, including all 80 original tests plus native input,
   composition, deletion, privacy contact escaping, palette contrast, optional
   audio, privacy-page serving and response headers.
 - A fresh production build including the privacy page, data and dictionary.
-- **75 Chromium interaction checks**, including desktop and emulated phone
+- **92 Chromium interaction checks**, including desktop and emulated phone
   typing, selection, deletion, word boundaries, incomplete/invalid guesses,
   valid wrong guesses, win/loss, results, dialog focus, clear-data confirmations,
   privacy, device-keyboard-sized viewports, landscape touch behavior and audio
-  opt-in. See `browser-check-results.json` for individual assertions.
-- **All 100 phrases at 320px and 393px widths**, checked for document/board
-  horizontal overflow and selected-cell visibility. Each collection traversal
+  opt-in, the single mobile menu, distinct word capsules, collapsed/expanded
+  earlier guesses and one-shot letter motion. See `browser-check-results.json`
+  for individual assertions.
+- **All 100 phrases at 280px, 320px and 393px widths**, checked for document/board
+  horizontal overflow and selected-cell visibility with the new word capsules. Each collection traversal
   visited 100 distinct phrases. See `layout-check-320.json` and
   `layout-check-393.json`.
-- Screenshots of the new desktop, mobile, privacy, result and compact keyboard-
-  viewport layouts were generated; primary layouts were visually inspected.
+- Screenshots of the desktop, compact mobile, long-word 320px, privacy,
+  result and keyboard-sized viewport layouts were generated; the mobile and
+  long-word layouts were visually inspected.
 - No unhandled application JavaScript errors in those browser checks. Browser
   requests during those checks were limited to the supplied application files.
 
@@ -47,6 +50,11 @@ a reduced visual viewport was tested. Physical phone/OS keyboard behavior,
 autocorrection edge cases, Safari, Firefox, assistive technology and actual
 browser storage should still be checked on devices. Contrast tests cover the
 specified palette combinations; they are not a full WCAG audit.
+
+The game does not run a canvas particle animation or continuous animation
+frames. Letter/feedback/result CSS animations are finite and respect reduced
+motion preferences. The motion budget was checked by source assertions and
+Chromium interaction tests, not by a physical-device power profiler.
 
 Audio tests verify that audio is opt-in, browser audio contexts/oscillators are
 created after enabling it, and unsupported audio does not break the game.
@@ -73,6 +81,7 @@ From the project root:
 python -m pip install -r qa/requirements.txt
 python -m playwright install chromium
 python qa/browser_interactions.py
+python qa/phrase_layout.py 280
 python qa/phrase_layout.py 320
 python qa/phrase_layout.py 393
 ```
@@ -84,7 +93,9 @@ Playwright-installed browser; `CHROMIUM_EXECUTABLE` can specify a binary.
 
 ## Physical-device and deployment checklist
 
-On the actual HTTPS deployment, check that tapping a tile opens the phone
+On the actual HTTPS deployment, check that the Menu gives access to Settings,
+Statistics, Help and freeplay reveal, and that the Earlier guesses toggle can
+expand/collapse old feedback. Check that tapping a tile opens the phone
 keyboard; typing advances once, backspace works, selecting another word keeps
 the keyboard open, and Submit remains reachable. Test rotation, keyboard
 show/hide, paste and a long phrase. Confirm the virtual game keyboard stays

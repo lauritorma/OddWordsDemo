@@ -24,7 +24,7 @@ with sync_playwright() as p:
         selected=page.evaluate('''()=>{const b=document.querySelector('#board').getBoundingClientRect();const t=document.querySelector('.tile.cursor').getBoundingClientRect();return t.top>=b.top-1 && t.bottom<=b.bottom+1;}''')
         assert selected,(width,phrase_id,'selected tile out of view')
         if index==99:break
-        page.locator('[data-action="skip"]').click();page.locator('[data-action="confirm-skip"]').click();page.locator('[data-action="next"]').click()
+        page.locator('[data-action="menu"]').click();page.locator('#modal [data-action="skip"]').click();page.locator('[data-action="confirm-skip"]').click();page.locator('[data-action="next"]').click()
     assert len(set(seen))==100, (len(set(seen)),len(seen))
     assert not errors, errors
     page.screenshot(path=str(ROOT/'docs/images'/f'layout-{width}.png'),full_page=True)

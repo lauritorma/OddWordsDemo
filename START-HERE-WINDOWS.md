@@ -78,7 +78,7 @@ schedule, privacy page, scripts, stylesheet and licenses automatically.
 ## Device checks
 
 On desktop, use your physical keyboard or the on-screen keys. On a phone, tap a
-tile or Open keyboard. Confirm that the native keyboard opens and that the
+tile or Keyboard. Confirm that the native keyboard opens and that the
 outlined cell advances as you type. Test deletion, selecting an earlier cell,
 rotating the device, and submission. Check sound on your device after enabling
 it; it starts off. Confirm that Settings > Clear saved data asks for confirmation

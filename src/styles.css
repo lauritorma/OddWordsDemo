@@ -170,7 +170,22 @@ h1 { font-size: clamp(30px, 3.6vw, 44px); line-height: 1.15; letter-spacing: -1.
 .result .submit-button { margin-top: 10px; justify-content: space-between; }
 .result-foot { font-size: 12px; color: var(--muted); margin-top: 18px; line-height: 1.7; }
 .result-foot .countdown { font-family: var(--mono); color: var(--text); }
-#confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 40; }
+/* Action-only animation: no timers, infinite loops, or animated background. */
+.mobile-menu-button, .history-toggle { display: none; }
+.tile.just-typed > span:first-child { animation: letter-pop .16s ease-out both; }
+.message.error.has-message { animation: message-nudge .2s ease-out both; }
+@keyframes letter-pop { from { transform: scale(.78); opacity: .4; } to { transform: scale(1); opacity: 1; } }
+@keyframes message-nudge { 20% { transform: translateX(-3px); } 60% { transform: translateX(3px); } to { transform: translateX(0); } }
+.result-stars { position: relative; display: inline-flex; gap: 9px; vertical-align: middle; margin: 0 0 16px 8px; color: var(--accent); }
+.result-stars span { display: inline-block; font-size: 18px; animation: star-pop .42s cubic-bezier(.21,.7,.33,1.2) both; }
+.result-stars span:nth-child(2) { animation-delay: .10s; transform-origin: center; font-size: 12px; }
+.result-stars span:nth-child(3) { animation-delay: .18s; font-size: 15px; }
+@keyframes star-pop { from { transform: translateY(5px) scale(.65); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+.menu-list { display: grid; border-top: 1px solid var(--line-soft); }
+.menu-list button { width: 100%; min-height: 54px; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 4px; text-align: left; font-size: 15px; background: transparent; border: 0; border-bottom: 1px solid var(--line-soft); border-radius: 0; }
+.menu-list button:hover { color: var(--accent); }
+.menu-list span { color: var(--muted); }
+
 .modal { background: var(--panel); border: 1px solid var(--line); color: var(--text); border-radius: 6px; width: min(560px, calc(100% - 24px)); padding: 0; max-height: 88dvh; overscroll-behavior: contain; }
 .modal::backdrop { background: #080a0de0; }
 .modal-inner { padding: 28px; }
@@ -222,89 +237,84 @@ h1 { font-size: clamp(30px, 3.6vw, 44px); line-height: 1.15; letter-spacing: -1.
   .record-strip span + span { padding-left: 20px; }
   .small-button { min-width: 38px; padding-inline: 8px; }
 }
-/* This query must match NATIVE_INPUT_QUERY in lib/native-input.js. */
+/* Matches NATIVE_INPUT_QUERY in lib/native-input.js; the OS keyboard is used here. */
 @media (max-width: 760px), (hover: none) and (pointer: coarse) {
-  .wrap { max-width: 680px; padding-inline: max(16px, env(safe-area-inset-left)); }
-  .site-header { min-height: 72px; gap: 8px; }
-  .brand { font-size: 18px; gap: 10px; }
-  .brand-mark { width: 26px; height: 26px; }
-  .brand-sub { font-size: 8px; letter-spacing: .5px; }
-  .header-actions { gap: 4px; }
-  .icon-button { border-color: transparent; }
-  .intro { padding: 22px 0 18px; gap: 15px; }
-  .intro h1 { font-size: 30px; letter-spacing: -1px; }
-  .intro p { font-size: 13px; max-width: 290px; margin-top: 7px; }
-  .record-strip { padding: 3px; }
-  .record-strip span + span { display: none; }
-  .record-strip strong { font-size: 26px; text-align: right; }
-  .record-strip small { font-size: 10px; text-align: right; max-width: 50px; line-height: 1.5; }
-  .mode-bar { margin-bottom: 16px; gap: 10px; }
-  .mode { padding: 12px 20px; font-size: 14px; }
-  .mode-detail { display: none; }
-  .edition { font-size: 10px; text-align: right; }
-  .play-layout { grid-template-columns: 1fr; gap: 18px; }
-  .console-head { padding: 14px 16px; }
-  .console-head h2 { font-size: 15px; }
-  .micro { font-size: 10px; }
-  .board { padding: 14px 12px 6px; max-height: clamp(180px, calc(var(--viewport-height, 100dvh) * .52), 420px); overflow-y: auto; overscroll-behavior-y: contain; }
-  .guess-row { gap: 7px; padding: 9px 0; }
-  .row-number { flex-basis: 15px; font-size: 10px; }
-  .word-groups { gap: 10px 12px; }
-  .guess-row.future { min-height: 25px; padding: 6px 0; }
-  .guess-row.future .tile { width: 6px; height: 6px; font-size: 0; border: 0; border-radius: 1px; background: var(--line); }
-  .guess-row.future .word-group { gap: 3px; }
-  .guess-row.future .word-groups { gap: 6px 12px; }
+  .wrap { max-width: 620px; padding-inline: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); }
+  .site-header { min-height: 58px; border-bottom-color: var(--line-soft); }
+  .brand { font-size: 17px; gap: 9px; letter-spacing: -.4px; }
+  .brand-mark { width: 24px; height: 24px; }
+  .brand-sub { display: none; }
+  .header-actions > :not(.mobile-menu-button) { display: none; }
+  .mobile-menu-button { display: grid; border: none; width: 44px; height: 44px; }
+  .intro { display: none; }
+  .mode-bar { margin: 0; padding: 9px 0 0; border: 0; }
+  .mode-switch { gap: 5px; }
+  .mode { padding: 10px 20px; border: 0; border-radius: 7px; font-size: 13px; font-weight: 650; text-align: center; }
+  .mode.selected { background: var(--raised); color: var(--text); box-shadow: inset 0 -2px var(--accent); }
+  .mode-detail, .edition { display: none; }
+  .play-layout { display: block; }
+  .console { border: 0; border-radius: 0; background: transparent; overflow: visible; }
+  .console-head { border: 0; padding: 14px 1px 10px; }
+  .console-head h2 { margin: 0; font-size: 14px; font-weight: 650; }
+  .console-head #puzzle-mode, .console-head .pips { display: none; }
+  .attempt-counter .micro { color: var(--text); font-size: 11px; letter-spacing: .1px; }
+  .board-shell { background: var(--panel); border: 1px solid var(--line-soft); border-radius: 10px; overflow: hidden; }
+  .history-toggle { display: flex; align-items: center; width: 100%; min-height: 40px; padding: 8px 12px; background: var(--panel); border: 0; border-bottom: 1px solid var(--line-soft); border-radius: 0; color: var(--muted); text-align: left; font-size: 12px; }
+  .history-toggle:hover { color: var(--text); }
+  .board { padding: 12px 5px; max-height: min(54dvh, 430px); overflow-y: auto; overscroll-behavior-y: contain; scroll-padding: 12px; }
+  .guess-row { display: flex; width: 100%; padding: 4px 0; gap: 0; border: 0; }
+  .guess-row.older { display: none; }
+  .board.show-history .guess-row.older { display: flex; }
+  .guess-row.submitted { border-bottom: 1px solid var(--line-soft); margin-bottom: 9px; padding-bottom: 12px; }
+  .guess-row.submitted:last-child { border-bottom: 0; margin-bottom: 0; padding-bottom: 4px; }
+  .row-number { display: none; }
+  .word-groups { justify-content: center; flex-wrap: wrap; width: 100%; gap: 11px 13px; }
+  /* Each capsule is exactly one word. The word is never broken across lines. */
+  .word-group { display: flex; flex: 0 0 auto; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 7px; background: var(--raised); transition: border-color .13s ease, background-color .13s ease; }
+  .guess-row.submitted .word-group { border-color: var(--line); background: #262a30; }
+  .word-group.current-word { border-color: var(--accent); background: #42382b; box-shadow: none; }
+  .tile { border: 1px solid var(--line); border-radius: 3px; }
+  .tile.cursor { border-color: var(--accent); outline: 2px solid var(--accent); outline-offset: -1px; background: #39352e; z-index: 1; }
+  .tile.cursor::after { height: 2px; bottom: 2px; }
   .native-input { z-index: 2; }
   .native-only { display: inline-flex; align-items: center; }
-  .input-status { padding-block: 0; min-height: 44px; font-size: 10px; }
-  .message { font-size: 12px; min-height: 37px; padding-top: 2px; padding-bottom: 10px; }
-  .entry-controls { gap: 8px; padding: 0 12px 14px; }
-  .edit-controls { gap: 4px; }
-  .small-button { min-width: 40px; min-height: 44px; padding-inline: 8px; }
-  .clear-button { font-size: 11px; }
-  .submit-button { padding: 10px 12px; font-size: 12px; gap: 10px; }
-  .keyboard { display: none; }
-  .keyboard-open .board { max-height: clamp(110px, calc(var(--viewport-height, 100dvh) * .38), 240px); }
-  .keyboard-open .console-foot { display: none; }
-  .keyboard-open .console-head { padding-block: 10px; }
-  .console-foot { padding: 10px 16px; font-size: 10px; }
-  .desktop-hint { display: none; }
-  .briefing { padding: 18px; }
-  .briefing h2 { font-size: 16px; margin-bottom: 8px; }
-  .briefing > p, .briefing .pattern { display: none; }
-  .legend { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 16px 0 18px; }
-  .legend > div { flex-direction: column; align-items: flex-start; gap: 9px; }
-  .legend strong { font-size: 12px; }
-  .legend span:not(.example-tile) > small { font-size: 11px; }
-  .clock { grid-template-columns: 1fr auto; align-items: center; gap: 6px; padding-top: 16px; }
-  .clock > strong { grid-column: 2; grid-row: 1 / span 2; font-size: 23px; }
-  .clock > .micro:last-child { grid-column: 1; }
-  .discovery-note { font-size: 11px; }
-  .result { padding: 22px; }
-  .result-badge { float: right; margin: 0 0 15px 18px; }
-  .result-phrase { font-size: 27px; }
-  .site-footer { gap: 12px; padding-bottom: max(20px, env(safe-area-inset-bottom)); font-size: 11px; }
+  .input-status { padding: 4px 2px 0; min-height: 34px; font-size: 12px; gap: 7px; }
+  .input-status .text-button { margin-left: auto; color: var(--accent); font: 12px var(--sans); padding: 6px 3px; }
+  .message { display: none; min-height: 0; font-size: 12px; padding: 5px 2px 8px; }
+  .message.has-message { display: block; }
+  .entry-controls { gap: 10px; padding: 9px 0 15px; }
+  .edit-controls .small-button { display: none; }
+  .edit-controls .clear-button { display: inline-flex; align-items: center; min-width: 48px; min-height: 44px; padding: 8px 6px; color: var(--muted); background: transparent; border: none; text-decoration: underline; text-underline-offset: 3px; font-size: 13px; }
+  .entry-controls .submit-button { flex: 1; min-height: 48px; padding: 10px 14px; gap: 10px; border-radius: 7px; font-size: 14px; }
+  .entry-controls .submit-button span:last-child { font-size: 18px; }
+  .keyboard, .console-foot { display: none; }
+  .play-layout:not(.round-complete) .side-panel { display: none; }
+  .briefing, .discovery-note { display: none !important; }
+  .side-panel { display: block; margin-top: 6px; }
+  .result { padding: 22px 18px; border-radius: 9px; }
+  .result-badge { width: 36px; height: 36px; margin-bottom: 10px; font-size: 20px; }
+  .result-stars { margin-bottom: 10px; }
+  .result h2 { font-size: 22px; }
+  .result-phrase { font-size: 24px; }
+  .site-footer { gap: 12px; padding-top: 10px; padding-bottom: max(18px, env(safe-area-inset-bottom)); font-size: 11px; }
   .site-footer nav { gap: 14px; }
+  .site-footer > span, .site-footer [data-action="help"] { display: none; }
+  .site-footer { justify-content: center; }
   .footer-mark { display: none; }
   .modal-inner { padding: 22px; }
-  .modal h2 { font-size: 25px; }
-  .privacy-page { padding-top: 28px; }
+  .modal h2 { font-size: 24px; }
+  .privacy-page { padding-top: 25px; }
+  .keyboard-open .board { max-height: min(34dvh, 260px); }
+  .keyboard-open .console-head { padding-block: 8px; }
+  .keyboard-open .mode-bar { display: none; }
 }
 @media (max-width: 370px) {
-  .wrap { padding-inline: 10px; }
-  .brand { font-size: 16px; gap: 7px; }
-  .brand-mark { width: 23px; height: 23px; }
-  .brand-sub { display: none; }
-  .header-actions { gap: 0; }
-  .icon-button { width: 40px; }
-  .intro h1 { font-size: 27px; }
-  .record-strip { display: none; }
-  .mode { padding-inline: 17px; }
-  .entry-controls { flex-wrap: wrap; }
-  .entry-controls .submit-button { flex: 1; }
-  .entry-controls .small-button { min-width: 36px; padding-inline: 6px; }
-  .input-status { gap: 6px; padding-inline: 12px; }
-  .input-status .text-button { font-size: 11px; }
+  .wrap { padding-inline: max(8px, env(safe-area-inset-left)); padding-right: max(8px, env(safe-area-inset-right)); }
+  .board { padding: 10px 2px; }
+  .word-groups { column-gap: 9px; }
+  .word-group { padding: 3px; }
+  .input-status { font-size: 11px; }
+  .entry-controls .submit-button { font-size: 13px; }
   .stats-grid { gap: 6px; }
   .stat strong { font-size: 23px; }
   .modal-example { gap: 2px; }

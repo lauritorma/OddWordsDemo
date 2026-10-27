@@ -23,6 +23,14 @@ with sync_playwright() as p:
         prefix='mobile' if mobile else 'desktop'
         record(prefix+' keyboard visibility',page.locator('#keyboard').is_visible()!=mobile)
         record(prefix+' initial overflow',not page.evaluate('document.documentElement.scrollWidth > innerWidth'))
+        if mobile:
+            record('mobile menu is visible',page.locator('[data-action="menu"]').is_visible())
+            record('mobile intro is hidden',not page.locator('.intro').is_visible())
+            record('mobile briefing is hidden',not page.locator('#briefing').is_visible())
+            record('mobile board renders current row only',page.locator('.guess-row').count()==1)
+            record('mobile groups mark word boundaries',page.locator('.guess-row.active .word-group').count()==3)
+            record('mobile word groups are bordered',page.locator('.word-group').first.evaluate('(el) => getComputedStyle(el).borderStyle')=='solid')
+
         page.locator('[data-index="0"]').click()
         if mobile: record('native input receives focus',page.evaluate('document.activeElement.id')=='native-input')
         page.keyboard.type('a')
@@ -37,7 +45,7 @@ with sync_playwright() as p:
         record(prefix+' end movement',saved(page)['freeplay']['cursor']==9)
         page.locator('[data-index="5"]').click()
         record(prefix+' select a tile',saved(page)['freeplay']['cursor']==5)
-        record(prefix+' active position cue','Word 3 of 3, letter 1 of 5' in page.locator('#input-position').inner_text())
+        record(prefix+' active position cue',('Word 3/3' if mobile else 'Word 3 of 3, letter 1 of 5') in page.locator('#input-position').inner_text())
         page.locator('[data-key="Clear"]').click()
         record(prefix+' clear draft',not any(saved(page)['freeplay']['draft']))
         page.locator('#submit').click()
@@ -49,6 +57,10 @@ with sync_playwright() as p:
         page.locator('#submit').click()
         page.wait_for_selector('.guess-row.active')
         record(prefix+' valid wrong guess accepted',len(saved(page)['freeplay']['guesses'])==1)
+        if mobile:
+            record('mobile shows current and last guess only',page.locator('.guess-row').count()==2)
+            record('mobile previous guess is visible',page.locator('.guess-row.submitted').is_visible())
+
         record(prefix+' feedback symbols exist',page.locator('.submitted .tile-mark').count()==10)
         if mobile:
             record('native input persists through reveal',page.locator('#native-input').count()==1)
@@ -63,15 +75,26 @@ with sync_playwright() as p:
         record(prefix+' winning round',saved(page)['freeplay']['status']=='won')
         record(prefix+' result definition shown','less impressive' in page.locator('#result').inner_text())
         record(prefix+' completed board cannot be edited',page.locator('[data-index]').count()==0)
+        if mobile: record('mobile winning stars have no canvas',page.locator('.result-stars span').count()==3 and page.locator('canvas').count()==0)
+
         record(prefix+' finished input disabled',page.locator('#native-input').is_disabled())
-        page.locator('[data-action="settings"]').click()
+        if mobile:
+            page.locator('[data-action="menu"]').click()
+            page.locator('#modal [data-action="settings"]').click()
+        else: page.locator('[data-action="settings"]').click()
         record(prefix+' settings opens',page.locator('#modal-title').inner_text()=='Settings')
         page.keyboard.press('Escape')
-        record(prefix+' modal restores focus',page.evaluate('document.activeElement.dataset.action')=='settings')
-        page.locator('[data-action="stats"]').first.click()
+        record(prefix+' modal restores focus',page.evaluate('document.activeElement.dataset.action')==('menu' if mobile else 'settings'))
+        if mobile:
+            page.locator('[data-action="menu"]').click()
+            page.locator('#modal [data-action="stats"]').click()
+        else: page.locator('[data-action="stats"]').first.click()
         record(prefix+' stats opens','Statistics' in page.locator('#modal-title').inner_text())
         page.keyboard.press('Escape')
-        page.locator('[data-action="settings"]').click()
+        if mobile:
+            page.locator('[data-action="menu"]').click()
+            page.locator('#modal [data-action="settings"]').click()
+        else: page.locator('[data-action="settings"]').click()
         page.locator('[data-action="clear-data"]').click()
         page.locator('[data-action="confirm-clear"]').click()
         record(prefix+' deletion removes save without immediately recreating it',page.evaluate('localStorage.getItem("odd-words:v1")') is None)
@@ -80,6 +103,25 @@ with sync_playwright() as p:
         record(prefix+' no uncaught JS errors',not errors)
         record(prefix+' no external network integrations',all(url.startswith(ORIGIN) for url in requests))
         context.close()
+
+    # History is collapsed by default; the current guess stays visually primary.
+    context=browser.new_context(viewport={'width':320,'height':740},is_mobile=True,has_touch=True,reduced_motion='no-preference')
+    page=context.new_page();requests,errors=mount(context,page,saved=seed())
+    for _ in range(3):
+        paste(page,'a warm smile');page.locator('#submit').click()
+        page.wait_for_selector('.guess-row.active')
+    record('mobile previous guesses remain in the DOM',page.locator('.guess-row.older').count()==2)
+    record('mobile older rows start collapsed',page.locator('.guess-row.older:visible').count()==0)
+    record('mobile shows only latest feedback and current row',page.locator('.guess-row:visible').count()==2)
+    record('mobile history toggle shows count',page.locator('#history-toggle').is_visible() and '(2)' in page.locator('#history-toggle').inner_text())
+    page.locator('#history-toggle').click()
+    record('mobile history expands',page.locator('.guess-row:visible').count()==4 and page.locator('#history-toggle').get_attribute('aria-expanded')=='true')
+    page.locator('#history-toggle').click()
+    record('mobile history collapses',page.locator('.guess-row:visible').count()==2 and page.locator('#history-toggle').get_attribute('aria-expanded')=='false')
+    page.locator('[data-index="0"]').click(); page.keyboard.type('a')
+    record('typing uses a one-shot animation',page.locator('.tile.just-typed span').first.evaluate('(el)=> getComputedStyle(el).animationIterationCount')=='1')
+    record('no uncaught errors in history interactions',not errors)
+    context.close()
 
     # Composition, native-only deletion, resize, explicit audio consent, and loss.
     context=browser.new_context(viewport={'width':393,'height':852},is_mobile=True,has_touch=True)
@@ -91,12 +133,15 @@ with sync_playwright() as p:
     page.evaluate('''()=>document.querySelector('#native-input').dispatchEvent(new InputEvent('beforeinput',{inputType:'deleteContentBackward',cancelable:true,bubbles:true}))''')
     record('native beforeinput backspace',''.join(saved(page)['freeplay']['draft'])=='A')
     record('sound off creates no AudioContext',page.evaluate('window.__audioContexts')==0)
-    page.locator('[data-action="sound"]').click()
+    page.locator('[data-action="menu"]').click()
+    page.locator('#modal [data-action="settings"]').click()
+    page.locator('#modal [data-setting="sound"]').check()
     page.wait_for_function('window.__oscillators > 0')
     record('sound opt-in creates local audio',page.evaluate('window.__audioContexts')==1)
     record('sound toggle persists preference',saved(page)['settings']['sound'] is True)
-    page.locator('[data-action="sound"]').click()
+    page.locator('#modal [data-setting="sound"]').uncheck()
     record('sound toggle mutes',saved(page)['settings']['sound'] is False)
+    page.keyboard.press('Escape')
     page.locator('[data-action="type"]').click()
     page.set_viewport_size({'width':393,'height':430})
     page.wait_for_timeout(150)
@@ -121,7 +166,7 @@ with sync_playwright() as p:
     # Dedicated privacy page and data deletion work without a game round loaded.
     context=browser.new_context(viewport={'width':393,'height':852},is_mobile=True,has_touch=True)
     page=context.new_page();requests,errors=mount(context,page,'privacy.html',seed())
-    record('privacy contact fallback is honest','not been configured' in page.locator('#operator-contact').inner_text())
+    record('privacy operator contact renders',page.locator('#operator-contact').inner_text().startswith('Site operator:'))
     record('privacy describes Vercel hosting','Vercel receives your IP address' in page.locator('main').inner_text())
     page.locator('#clear-saved-data').click();page.locator('#cancel-clear').click()
     record('privacy cancel preserves data',page.evaluate('localStorage.getItem("odd-words:v1")') is not None)

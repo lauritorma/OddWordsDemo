@@ -33,13 +33,37 @@ The save format and key, `odd-words:v1`, are unchanged. Existing valid saves
 continue working when the updated site uses the same domain and browser.
 The 100 phrases, their meanings, daily schedule and dictionary are preserved.
 
-## What changed in 1.1.0
+## What changed in 1.2.0
+
+The mobile game now opens directly on the puzzle. Unused guess rows, large
+introductory copy, the rules card and extra edit buttons no longer occupy the
+phone screen. The header has one **Menu** button; Help, Statistics, Settings
+(including sound) and the freeplay reveal action are available there.
+
+**Every word is framed separately**. Whole word groups wrap together, and the
+word containing the selected tile has a warm outline. A concise position
+label shows exactly which word and letter you are editing. Only the current
+entry and last submitted guess stay visible. Earlier guesses can be revealed
+with **Earlier guesses**; all six attempts remain available in the game history.
+
+On a phone, tap a tile or **Keyboard** to open your device keyboard. Use its
+Backspace key or the small **Clear** link, then **Submit guess**. The desktop
+keyboard and controls are unchanged. Letter entry now has a small one-time pop;
+incorrect submissions get a tiny nudge, and a win shows three brief stars.
+There is **no animated background, canvas particle loop, or constant animation**.
+All movement respects the system motion preference and the in-game Reduce
+motion option. The privacy page, local sound effects, dictionary, modes, saved
+games and 100 phrases are preserved.
+
+![Simplified mobile game](docs/images/mobile.png)
+
+## Previously added in 1.1.0
 
 - **Mobile input:** the game keyboard is hidden on narrow screens and primary
-  touch devices, including landscape. Tap a tile or **Open keyboard** to use
-  your device keyboard. A strong outline, underline, highlighted word and
-  word/letter position label identify the active cell. Future rows are compact;
-  the board scrolls to the selected tile without shrinking every word.
+  touch devices, including landscape. Tap a tile or **Keyboard** to use your
+  device keyboard. A strong outline, underline, highlighted word and
+  word/letter position label identify the active cell. The board scrolls
+  to the selected tile while you type.
 - **Presentation:** plain copy, charcoal surfaces, warm white text, muted gold
   controls, and readable green/amber/gray feedback. Feedback symbols are on by
   default. System reduced-motion preferences remain supported.
@@ -48,10 +72,9 @@ The 100 phrases, their meanings, daily schedule and dictionary are preserved.
   Vercel hosting records. Clear saved data removes only this game's key and
   resets other open game tabs when they receive the deletion event.
 - **Sound:** quiet synthesized cues for typing, deleting, submission, invalid
-  guesses, wins and losses. Sound is off by default; the header and Settings
-  offer an explicit toggle. No audio files or microphone permission are used.
-
-![Mobile game](docs/images/mobile.png)
+  guesses, wins and losses. Sound is off by default; Settings contains a toggle
+  on mobile, and the header also has a toggle on desktop. No audio files or
+  microphone permission are used.
 
 ## Before publishing the privacy notice
 
@@ -148,7 +171,7 @@ src/styles.css                Responsive styles and colour tokens
 src/site-config.js            Public operator/contact details
 src/privacy.js                Privacy-page controls
 src/lib/native-input.js       Mobile input and composition handling
-src/lib/effects.js            Local audio and victory particles
+src/lib/effects.js            Local synthesized audio (no animation loop)
 src/lib/game.js                Pure game rules
 src/lib/storage.js             Saves, deletion and statistics
 src/data/phrases.json          100 phrases and meanings
@@ -163,8 +186,8 @@ vercel.json                   Static deployment and response headers
 
 ## Verification and limits
 
-The delivered revision passes **137 Node tests**, **75 Chromium interaction
-checks**, and **all 100 phrases at both 320px and 393px widths** without
+The delivered revision passes **143 Node tests**, **92 Chromium interaction
+checks**, and **all 100 phrases at 280px, 320px and 393px widths** without
 horizontal overflow. Colour token combinations have automated contrast checks.
 See [docs/VERIFICATION.md](docs/VERIFICATION.md) for exact coverage and limits.
 

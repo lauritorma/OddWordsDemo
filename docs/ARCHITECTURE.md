@@ -39,11 +39,16 @@ trapped by the board. Modal dialogs have native focus trapping and restore the
 trigger where possible. Whole-phrase paste validates the required word shape;
 dictionary validation still happens only on submission.
 
-On mobile, words wrap as units, future rows use compact placeholders, and the
-board scrolls to the selected tile. A visual-viewport height change can compact
-the board while the device keyboard is open. The input stays mounted through
-these layout updates. The desktop keyboard is both hidden and excluded from
-interaction on mobile, not merely covered up.
+On mobile, each word is framed inside its own capsule. Words wrap as complete
+units so their start/end boundaries are never ambiguous. Tile size is based on
+the longest word and available width. Only the current guess and most recent
+submitted guess are initially visible; earlier guesses are collapsed behind
+an accessible button and all future placeholders are omitted. A visual-viewport
+height change can compact the board while the device keyboard is open. The
+board follows the selected tile. The input stays mounted through these layout
+updates. The desktop keyboard is both hidden and excluded from interaction on
+mobile, not merely covered up. The mobile header opens a menu with less-used
+controls, including freeplay reveal/skip. The desktop interface is unchanged.
 
 ## Privacy and optional audio
 
@@ -52,6 +57,11 @@ operator/contact details; the build safely embeds them into the static page.
 `privacy.js` adds the confirmed local-data deletion control. `clearSave` removes
 only `odd-words:v1`. Game tabs handle deletion storage events; ordinary simultaneous
 save conflicts are still not resolved.
+
+UI motion consists of short CSS transform/opacity effects on letter entry,
+validation feedback and the winning result, plus finite guess reveal/celebration
+effects. There is no canvas, animation-frame loop or continuously animated
+background. CSS honours the system Reduce motion setting and the user option.
 
 Sound is synthesized locally after opt-in and a user gesture. Cues are short
 sine-wave envelopes; voices disconnect when finished. Muting cancels existing
@@ -72,8 +82,9 @@ absent. Sharing reconstructs the same colours without exposing answer text.
 ## Daily, freeplay and statistics
 
 The daily schedule is independent of array order and uses a fixed UTC epoch.
-A one-second timer updates the countdown and detects the next UTC date.
-Returning to a visible tab also checks the date. A daily rollover resets the
+A one-second timer updates the countdown and detects the next UTC date while
+the page is visible; hidden tabs skip that work. Returning to a visible tab
+also checks the date. A daily rollover resets the
 daily round but does not reset the current freeplay round.
 
 Freeplay draws from a saved shuffled bag, excluding today's daily answer and

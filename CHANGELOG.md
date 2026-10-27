@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.2.0 - 2026-10-27
+
+### Mobile layout
+
+- Replace the four-button header with one accessible menu for help, stats,
+  settings and the freeplay reveal action. Keep Privacy reachable in the footer.
+- Remove the oversized mobile intro, streak block, rule card, secondary keyboard
+  controls and future-guess placeholders from the mobile play area.
+- Show the current row and most recent submitted row by default. Place earlier
+  guesses behind an expandable, screen-reader-labelled button.
+- Give **each word its own bordered capsule**, preserving its letter group as a
+  single wrapping unit. Increase tile sizes when words can wrap, and visibly
+  outline the word and tile currently being edited.
+- Compact the word/letter position label and keep only Clear, Submit guess and
+  an optional native-keyboard shortcut in the phone interface.
+- Retain the full desktop interface and original game rules, phrase data,
+  dictionary, daily schedule, saves, privacy notice and optional sound.
+
+### One-shot animation
+
+- Add a brief letter pop, tiny validation nudge and a three-star victory flourish.
+- Keep existing short reveal and celebration effects, respect the Reduce motion
+  setting and system preference, and remove the canvas particle loop entirely.
+- Skip the once-per-second countdown update while the browser tab is hidden.
+
+### Verification
+
+- Add compact-mobile regression tests, including expanded/collapsed history,
+  word boundaries and one-shot motion checks. Test all 100 phrases at 280px,
+  320px and 393px. Refresh browser screenshots.
+
+
 ## 1.1.0 - 2026-10-27
 
 ### Changed

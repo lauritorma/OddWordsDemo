@@ -25,6 +25,7 @@
       <button class="icon-button" data-action="help" aria-label="How to play" title="How to play"><span aria-hidden="true">?</span></button>
       <button class="icon-button" data-action="stats" aria-label="View statistics" title="Statistics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V12h4v8m2 0V4h4v16m2 0V8h4v12"/></svg></button>
       <button class="icon-button" data-action="settings" aria-label="Open settings" title="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 17h16M9 4v6m6 4v6"/></svg></button>
+      <button class="icon-button mobile-menu-button" data-action="menu" aria-label="Open menu" title="Menu" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
     </nav>
   </header>
   <main class="wrap">
@@ -44,11 +45,12 @@
       <section class="console" id="game" tabindex="-1" aria-labelledby="puzzle-label">
         <div class="console-head"><div><span class="micro" id="puzzle-mode">DAILY</span><h2 id="puzzle-label">Puzzle 001</h2></div><div class="attempt-counter"><span class="micro" id="attempt-label">GUESS 01 / 06</span><div id="attempt-pips" class="pips" aria-hidden="true"></div></div></div>
         <div class="board-shell">
+          <button type="button" id="history-toggle" class="history-toggle" data-action="history" aria-expanded="false" aria-controls="board" hidden>Show earlier guesses</button>
           <div id="board" class="board" aria-label="Phrase guesses"></div>
           <!-- This input is persistent: replacing it during a render closes phone keyboards. -->
           <input id="native-input" class="native-input" type="text" inputmode="text" enterkeyhint="go" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="Type letters for the selected tile" aria-describedby="input-position input-help" tabindex="-1">
         </div>
-        <div class="input-status" id="input-status"><span class="position-dot" aria-hidden="true"></span><span id="input-position">Word 1, letter 1</span><button class="text-button native-only" id="type-button" data-action="type">Open keyboard</button></div>
+        <div class="input-status" id="input-status"><span class="position-dot" aria-hidden="true"></span><span id="input-position">Word 1, letter 1</span><button class="text-button native-only" id="type-button" data-action="type" aria-label="Open device keyboard">Keyboard &#8599;</button></div>
         <p id="input-help" class="sr-only">Tap a tile to select it and type. Letters advance automatically. Backspace deletes a letter. Use Submit guess when the row is complete.</p>
         <div id="message" class="message" role="status" aria-live="polite" aria-atomic="true">Type a word into each group of tiles.</div>
         <div class="entry-controls"><div class="edit-controls"><button class="small-button" data-key="ArrowLeft" aria-label="Previous tile">&larr;</button><button class="small-button" data-key="ArrowRight" aria-label="Next tile">&rarr;</button><button class="small-button" data-key="Backspace" aria-label="Delete letter">&#9003;</button><button class="small-button clear-button" data-key="Clear">Clear</button></div><button class="submit-button" id="submit" data-key="Enter"><span>Submit guess</span><span aria-hidden="true">&#8629;</span></button></div>
@@ -75,7 +77,6 @@
     <footer class="site-footer"><span>Odd Words <span class="footer-mark">/ 100 phrases</span></span><nav aria-label="Site information"><a href="./privacy.html">Privacy</a><button class="text-button" data-action="help">How to play</button></nav></footer>
   </main>
   <dialog id="modal" class="modal" aria-labelledby="modal-title"></dialog>
-  <canvas id="confetti" aria-hidden="true"></canvas>
   <noscript><p class="noscript">Enable JavaScript to play Odd Words. The <a href="./privacy.html">privacy notice</a> works without it.</p></noscript>
 </body>
 </html>

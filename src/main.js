@@ -2,7 +2,7 @@ import { MAX_GUESSES, createRound, editRound, pasteRound, submitRound, restoreRo
 import { dailyPuzzle, drawFreeplay, untilMidnight, dateKey } from './lib/puzzles.js';
 import { parseDictionary } from './lib/dictionary.js';
 import { readSave, writeSave, clearSave, STORAGE_KEY, cleanHistory, recordResult, statistics } from './lib/storage.js';
-import { playSound, stopSounds, confetti } from './lib/effects.js';
+import { playSound, stopSounds } from './lib/effects.js';
 import { bindNativeInput, cursorPosition, NATIVE_INPUT_QUERY } from './lib/native-input.js';
 
 const $ = (selector) => document.querySelector(selector);
@@ -17,8 +17,9 @@ let storage;
 try { storage = window.localStorage; } catch { storage = null; }
 let phrases, schedule, dictionary, daily, dailyRound, freeRound, bag = [], history = [];
 let mode = 'daily', settings = { sound: false, symbols: true, reducedMotion: false };
-let ready = false, revealing = false, celebrating = '', timer, celebrationTimer, stopConfetti = () => {};
+let ready = false, revealing = false, celebrating = '', timer, celebrationTimer;
 let message = '', messageError = false, keyboardSignature = '', sideSignature = '';
+let showHistory = false, recentTyped = -1;
 const currentRound = () => mode === 'daily' ? dailyRound : freeRound;
 const currentPhrase = () => mode === 'daily' ? daily.phrase : phrases.find((phrase) => phrase.id === freeRound.phraseId);
 const reduced = () => media.matches || settings.reducedMotion;
@@ -60,7 +61,7 @@ async function initialize() {
     ready = true;
     $('#loading').hidden = true; $('#play-layout').hidden = false;
     render(); persist(); tick();
-    window.setInterval(tick, 1000);
+    window.setInterval(() => { if (!document.hidden) tick(); }, 1000);
   } catch (error) {
     $('#loading').innerHTML = `The puzzle could not load.<br><br><small>${escape(error.message)}</small><br><br><button class="outline-button" data-action="reload">TRY AGAIN</button>`;
     console.error(error);
@@ -82,7 +83,6 @@ function persist() {
 function applySettings() {
   document.body.classList.toggle('no-symbols', !settings.symbols);
   document.body.classList.toggle('reduced-motion', reduced());
-  if (reduced()) stopConfetti();
   const soundButton = $('[data-action="sound"]');
   soundButton.setAttribute('aria-pressed', String(settings.sound));
   soundButton.setAttribute('aria-label', settings.sound ? 'Turn sound off' : 'Turn sound on');
@@ -116,25 +116,36 @@ function render(focus = false) {
   renderBoard(focus); renderKeyboard(); renderSide();
   const fallback = revealing ? 'Checking guess...' : round.status === 'won' ? `Solved in ${round.guesses.length} ${round.guesses.length === 1 ? 'guess' : 'guesses'}.` : round.status === 'lost' ? 'No guesses left. The answer is shown below.' : round.status === 'skipped' ? 'Phrase revealed. This round is not scored.' : nativeMedia.matches ? 'Tap a tile to type. Submit when the row is complete.' : 'Type a word into each group of tiles.';
   $('#message').textContent = message || fallback;
-  $('#message').className = `message${messageError ? ' error' : round.status === 'won' && !revealing ? ' success' : ''}`;
+  $('#message').className = `message${message ? ' has-message' : ''}${messageError ? ' error' : round.status === 'won' && !revealing ? ' success' : ''}`;
 }
 
 function renderBoard(focus = false) {
   const round = currentRound(), phrase = currentPhrase(), shape = shapeOf(phrase.text);
   const board = $('#board'), native = nativeMedia.matches;
   const style = getComputedStyle(board);
-  const available = board.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight) - (native ? 25 : 31);
-  const gaps = (round.draft.length - shape.length) * 3 + (shape.length - 1) * 12;
+  // Mobile wraps at word boundaries, never inside a word. Account for the
+  // visible word capsule so even our eleven-letter answers fit a 320px phone.
+  const available = board.clientWidth - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight) - (native ? 0 : 31);
+  const gaps = (round.draft.length - shape.length) * (native ? 2 : 3) + (shape.length - 1) * (native ? 13 : 12);
   const fit = Math.floor((available - gaps) / round.draft.length);
   const longest = Math.max(...shape);
-  const maximumWordTile = Math.floor((available - (longest - 1) * 3) / longest);
-  const tile = Math.max(16, Math.min(maximumWordTile, fit >= 30 ? Math.min(native ? 40 : 42, fit) : (native ? 38 : 36)));
+  const maximumWordTile = Math.floor((available - (longest - 1) * (native ? 2 : 3) - (native ? 8 : 0)) / longest);
+  const tile = Math.max(20, Math.min(maximumWordTile, native ? 40 : fit >= 30 ? Math.min(42, fit) : 36));
+  const olderCount = Math.max(0, round.guesses.length - 1);
+  const historyToggle = $('#history-toggle');
+  historyToggle.hidden = !native || olderCount === 0;
+  historyToggle.setAttribute('aria-expanded', String(showHistory));
+  historyToggle.textContent = showHistory ? 'Hide earlier guesses ↑' : `Earlier guesses (${olderCount}) ↓`;
+  board.classList.toggle('show-history', showHistory);
   const scroll = board.scrollTop;
   const hadTileFocus = document.activeElement?.hasAttribute('data-index');
   board.setAttribute('aria-label', native ? 'Phrase guesses. Scroll to review earlier guesses.' : 'Phrase guesses');
   board.style.setProperty('--tile', `${tile}px`);
   board.style.setProperty('--delay', `${Math.min(30, 270 / round.draft.length)}ms`);
-  board.innerHTML = Array.from({ length: MAX_GUESSES }, (_, attempt) => {
+  const rowCount = native
+    ? round.guesses.length + (round.status === 'playing' && !revealing ? 1 : 0)
+    : MAX_GUESSES;
+  board.innerHTML = Array.from({ length: rowCount }, (_, attempt) => {
     const guess = round.guesses[attempt];
     const active = !revealing && round.status === 'playing' && attempt === round.guesses.length;
     const letters = guess ? lettersOf(guess) : active ? round.draft : Array(round.draft.length).fill('');
@@ -147,16 +158,17 @@ function renderBoard(focus = false) {
       const tiles = Array.from({ length }, (_, position) => {
         const index = offset + position, letter = letters[index], mark = feedback[index];
         const selected = active && index === round.cursor;
-        const className = `tile ${mark ?? ''}${active && letter ? ' filled' : ''}${selected ? ' cursor' : ''}`;
+        const className = `tile ${mark ?? ''}${active && letter ? ' filled' : ''}${selected ? ' cursor' : ''}${active && index === recentTyped ? ' just-typed' : ''}`;
         const label = `Word ${word + 1}, letter ${position + 1}: ${letter || 'empty'}${mark ? ', ' + descriptions[mark] : ''}`;
         const content = `<span aria-hidden="true">${escape(letter)}</span>${mark ? `<span class="tile-mark" aria-hidden="true">${marks[mark]}</span>` : ''}`;
         return active ? `<button class="${className}" data-index="${index}" tabindex="${selected && !native ? '0' : '-1'}" ${selected ? 'aria-current="true"' : ''} aria-label="${label}" type="button">${content}</button>` : `<span class="${className}" style="--i:${index}" ${guess ? `role="img" aria-label="${label}"` : 'aria-hidden="true"'}>${content}</span>`;
       }).join('');
       offset += length;
-      return `<div class="word-group${currentWord ? ' current-word' : ''}">${tiles}</div>`;
+      return `<div class="word-group${currentWord ? ' current-word' : ''}${length >= 9 ? ' long-word' : ''}" role="group" aria-label="Word ${word + 1}, ${length} letters">${tiles}</div>`;
     }).join('');
-    return `<div class="guess-row ${active ? 'active' : guess ? 'submitted' : 'future'}${reveal ? ' revealing' : ''}${celebrate ? ' celebrate' : ''}" role="group" aria-label="Guess ${attempt + 1}${guess ? ': ' + escape(guess) : active ? ', current entry' : ', empty'}"><span class="row-number" aria-hidden="true">${pad(attempt + 1)}</span><div class="word-groups">${words}</div></div>`;
+    return `<div class="guess-row ${active ? 'active' : guess ? 'submitted' : 'future'}${guess && attempt < round.guesses.length - 1 ? ' older' : ''}${reveal ? ' revealing' : ''}${celebrate ? ' celebrate' : ''}" role="group" aria-label="Guess ${attempt + 1}${guess ? ': ' + escape(guess) : active ? ', current entry' : ', empty'}"><span class="row-number" aria-hidden="true">${pad(attempt + 1)}</span><div class="word-groups">${words}</div></div>`;
   }).join('');
+  recentTyped = -1;
   board.scrollTop = scroll;
   if (focus && native) scrollSelectedTile();
   syncInputPosition();
@@ -180,7 +192,7 @@ function syncInputPosition() {
   const active = round.status === 'playing';
   const position = cursorPosition(shapeOf(currentPhrase().text), round.cursor);
   const label = `Word ${position.word} of ${position.words}, letter ${position.letter} of ${position.length}`;
-  $('#input-position').textContent = revealing ? 'Checking guess...' : active ? label : 'Round complete';
+  $('#input-position').textContent = revealing ? 'Checking guess...' : active ? nativeMedia.matches ? `Word ${position.word}/${position.words}  ·  Letter ${position.letter}/${position.length}` : label : 'Round complete';
   $('#type-button').hidden = !active;
   $('#type-button').disabled = revealing;
   input.disabled = !nativeMedia.matches || !active;
@@ -221,12 +233,13 @@ function renderSide() {
   const round = currentRound(), phrase = currentPhrase();
   const finished = round.status !== 'playing' && !revealing;
   $('#briefing').hidden = finished; $('#result').hidden = !finished;
+  $('#play-layout').classList.toggle('round-complete', finished);
   const signature = round.key + round.status + finished;
   if (!finished || signature === sideSignature) return;
   sideSignature = signature;
   const won = round.status === 'won', skipped = round.status === 'skipped';
   $('#result').className = `result ${round.status}`;
-  $('#result').innerHTML = `<div class="panel-label"><span>ROUND RESULT</span><span>${mode === 'daily' ? 'DAILY' : 'FREEPLAY'}</span></div><div class="result-badge" aria-hidden="true">${won ? '+' : '?'}</div><div class="result-label">${won ? 'SOLVED' : skipped ? 'REVEALED' : 'ROUND COMPLETE'}</div><h2>${won ? 'Phrase solved' : skipped ? 'Phrase revealed' : 'No guesses left'}</h2><p class="micro">${won ? `SOLVED IN ${round.guesses.length} OF 6 GUESSES` : skipped ? 'REVEALED / NOT SCORED' : 'THE ANSWER WAS'}</p><hr class="result-divider"><p class="result-phrase">${escape(phrase.text)}</p><p class="result-definition">${escape(phrase.meaning)}</p><a class="result-source" href="${escape(phrase.sourceUrl)}" target="_blank" rel="noopener noreferrer">Read the definition &nearr;</a>${!skipped ? '<button class="outline-button full" data-action="share">Copy result <span aria-hidden="true">+</span></button>' : ''}<button class="submit-button full" data-action="${mode === 'daily' ? 'freeplay' : 'next'}"><span>${mode === 'daily' ? 'Play freeplay' : 'Next phrase'}</span><span aria-hidden="true">&rarr;</span></button><p class="result-foot">${mode === 'daily' ? 'Next daily puzzle in <span class="countdown">' + untilMidnight() + '</span>' : 'Choose Next phrase to play again.'}</p>`;
+  $('#result').innerHTML = `<div class="panel-label"><span>ROUND RESULT</span><span>${mode === 'daily' ? 'DAILY' : 'FREEPLAY'}</span></div><div class="result-badge" aria-hidden="true">${won ? '&#10003;' : '?'}</div>${won ? '<div class="result-stars" aria-hidden="true"><span>✦</span><span>✦</span><span>✦</span></div>' : ''}<div class="result-label">${won ? 'SOLVED' : skipped ? 'REVEALED' : 'ROUND COMPLETE'}</div><h2>${won ? 'Phrase solved' : skipped ? 'Phrase revealed' : 'No guesses left'}</h2><p class="micro">${won ? `SOLVED IN ${round.guesses.length} OF 6 GUESSES` : skipped ? 'REVEALED / NOT SCORED' : 'THE ANSWER WAS'}</p><hr class="result-divider"><p class="result-phrase">${escape(phrase.text)}</p><p class="result-definition">${escape(phrase.meaning)}</p><a class="result-source" href="${escape(phrase.sourceUrl)}" target="_blank" rel="noopener noreferrer">Read the definition &nearr;</a>${!skipped ? '<button class="outline-button full" data-action="share">Copy result <span aria-hidden="true">+</span></button>' : ''}<button class="submit-button full" data-action="${mode === 'daily' ? 'freeplay' : 'next'}"><span>${mode === 'daily' ? 'Play freeplay' : 'Next phrase'}</span><span aria-hidden="true">&rarr;</span></button><p class="result-foot">${mode === 'daily' ? 'Next daily puzzle in <span class="countdown">' + untilMidnight() + '</span>' : 'Choose Next phrase to play again.'}</p>`;
 }
 
 function handleKey(key) {
@@ -252,6 +265,7 @@ function handleKey(key) {
     action = { type: 'cursor', index: Math.min(boundary, currentRound().draft.length - 1) };
   }
   if (!action) return;
+  recentTyped = action.type === 'letter' ? currentRound().cursor : -1;
   setRound(editRound(currentRound(), action));
   if (action.type === 'letter') playSound('key', settings.sound);
   if (['backspace', 'delete', 'clear'].includes(action.type)) playSound('erase', settings.sound);
@@ -275,7 +289,6 @@ function submit() {
     if (currentRound().status === 'won') {
       celebrating = key; render();
       playSound('win', settings.sound);
-      stopConfetti = confetti($('#confetti'), reduced());
       celebrationTimer = window.setTimeout(() => { celebrating = ''; if (ready) renderBoard(); }, 1400);
     } else {
       if (currentRound().status === 'lost') playSound('lose', settings.sound);
@@ -290,7 +303,8 @@ function submit() {
 
 function switchMode(next) {
   if (!ready || revealing || next === mode) return;
-  stopConfetti(); celebrating = ''; clearTimeout(celebrationTimer);
+  celebrating = ''; clearTimeout(celebrationTimer);
+  showHistory = false; recentTyped = -1;
   mode = next;
   if (mode === 'freeplay' && !freeRound) makeFreeRound();
   message = ''; messageError = false; sideSignature = ''; persist(); render();
@@ -298,7 +312,8 @@ function switchMode(next) {
 
 function nextPhrase() {
   if (!ready || revealing) return;
-  stopConfetti(); celebrating = ''; clearTimeout(celebrationTimer);
+  celebrating = ''; clearTimeout(celebrationTimer);
+  showHistory = false; recentTyped = -1;
   mode = 'freeplay'; makeFreeRound(); message = ''; messageError = false;
   sideSignature = ''; persist(); render(true);
   $('#game').scrollIntoView({ behavior: reduced() ? 'instant' : 'smooth', block: 'start' });
@@ -311,15 +326,20 @@ function openModal(title, content, eyebrow = 'ODD WORDS') {
   $('#modal-title').focus({ preventScroll: true });
 }
 
+function showMenu() {
+  const skip = mode === 'freeplay' && currentRound().status === 'playing' && !revealing;
+  openModal('Menu', `<div class="menu-list"><button data-action="help">How to play <span aria-hidden="true">→</span></button><button data-action="stats">Statistics <span aria-hidden="true">→</span></button><button data-action="settings">Settings & sound <span aria-hidden="true">→</span></button>${skip ? '<button data-action="skip">Reveal / skip phrase <span aria-hidden="true">→</span></button>' : ''}</div>`, 'ODD WORDS');
+}
+
 function showHelp() {
   const example = ['S', 'I', 'L', 'K', ' ', 'I', 'F', ' ', 'C', 'O', 'R', 'N'];
   const feedback = scoreGuess('silk if corn', 'milk is warm'); let i = 0;
   const tiles = example.map((letter) => letter === ' ' ? '<span class="word-gap"></span>' : `<span class="example-tile ${feedback[i++]}" aria-hidden="true">${letter}</span>`).join('');
-  openModal('How to play', `<p>Uncover an English phrase in <strong>six valid guesses</strong>. The spaces give you the word lengths.</p><ol class="rules-list"><li><strong>Every word must be in the dictionary.</strong> The whole guess does not have to make sense. Invalid entries never cost an attempt.</li><li><strong>Green:</strong> the letter is in the correct tile. <strong>Yellow:</strong> it appears elsewhere, including in another word. <strong>Gray:</strong> no matching copy remains.</li><li><strong>Duplicates are counted.</strong> Greens are assigned first. Extra copies can turn gray even when another copy is green.</li></ol><h3>AN EXAMPLE, NOT TODAY'S ANSWER</h3><p>For the answer <strong>MILK IS WARM</strong>, try <strong>SILK IF CORN</strong>:</p><div class="modal-example" aria-label="S yellow, I L K green, I green, F gray, C O gray, R green, N gray">${tiles}</div><p>The S is yellow because it belongs in a different word.</p><h3>YOUR CONTROLS</h3><p>On a phone or tablet, tap a tile or Open keyboard to use your device keyboard. The outlined tile and position label show where you are typing. On desktop, use your keyboard or the on-screen keys. Enter submits; arrows move; Backspace deletes. Tap any active tile to replace it. Space moves to the next word. Paste a complete phrase with matching word lengths.</p><h3>TWO WAYS TO PLAY</h3><p><strong>Daily:</strong> the same puzzle for everyone, changing at 00:00 UTC. <strong>Freeplay:</strong> random phrases, as many rounds as you like. Both save separately on this browser.</p><p class="settings-note">Dictionary policy: mostly US English, plus selected UK spellings and the answer vocabulary. Some rare or regional words may be missing. Answers use letters and spaces only.</p>`);
+  openModal('How to play', `<p>Uncover an English phrase in <strong>six valid guesses</strong>. The spaces give you the word lengths.</p><ol class="rules-list"><li><strong>Every word must be in the dictionary.</strong> The whole guess does not have to make sense. Invalid entries never cost an attempt.</li><li><strong>Green:</strong> the letter is in the correct tile. <strong>Yellow:</strong> it appears elsewhere, including in another word. <strong>Gray:</strong> no matching copy remains.</li><li><strong>Duplicates are counted.</strong> Greens are assigned first. Extra copies can turn gray even when another copy is green.</li></ol><h3>AN EXAMPLE, NOT TODAY'S ANSWER</h3><p>For the answer <strong>MILK IS WARM</strong>, try <strong>SILK IF CORN</strong>:</p><div class="modal-example" aria-label="S yellow, I L K green, I green, F gray, C O gray, R green, N gray">${tiles}</div><p>The S is yellow because it belongs in a different word.</p><h3>YOUR CONTROLS</h3><p>On a phone or tablet, tap a tile or Keyboard to use your device keyboard. Every outlined group is one word; the gold tile marks your typing position. Earlier guesses are tucked away above the board and can be expanded. On desktop, use your keyboard or the on-screen keys. Enter submits; arrows move; Backspace deletes. Tap any active tile to replace it. Space moves to the next word. Paste a complete phrase with matching word lengths.</p><h3>TWO WAYS TO PLAY</h3><p><strong>Daily:</strong> the same puzzle for everyone, changing at 00:00 UTC. <strong>Freeplay:</strong> random phrases, as many rounds as you like. Both save separately on this browser.</p><p class="settings-note">Dictionary policy: mostly US English, plus selected UK spellings and the answer vocabulary. Some rare or regional words may be missing. Answers use letters and spaces only.</p>`);
 }
 
 function showSettings() {
-  openModal('Settings', `<label class="setting-row"><span><strong>Sound effects</strong><small>Quiet sounds for typing, deleting, submitting, errors and results. Off by default.</small></span><input type="checkbox" data-setting="sound" ${settings.sound ? 'checked' : ''}></label><label class="setting-row"><span><strong>Feedback symbols</strong><small>+ correct, ~ elsewhere, - no match. More than colour.</small></span><input type="checkbox" data-setting="symbols" ${settings.symbols ? 'checked' : ''}></label><label class="setting-row"><span><strong>Reduce motion</strong><small>Skip tile flips, victory waves and confetti. Your system preference is always respected.</small></span><input type="checkbox" data-setting="reducedMotion" ${settings.reducedMotion ? 'checked' : ''}></label><p class="settings-note">Progress and preferences are stored on this device. Hosting requests are processed by Vercel. <a href="./privacy.html">Read the privacy notice</a>.</p><button class="outline-button danger-button" data-action="clear-data">Clear saved data</button><p class="settings-note">This removes your progress, statistics and settings from this browser.</p>`, 'ODD WORDS / SETTINGS');
+  openModal('Settings', `<label class="setting-row"><span><strong>Sound effects</strong><small>Quiet sounds for typing, deleting, submitting, errors and results. Off by default.</small></span><input type="checkbox" data-setting="sound" ${settings.sound ? 'checked' : ''}></label><label class="setting-row"><span><strong>Feedback symbols</strong><small>+ correct, ~ elsewhere, - no match. More than colour.</small></span><input type="checkbox" data-setting="symbols" ${settings.symbols ? 'checked' : ''}></label><label class="setting-row"><span><strong>Reduce motion</strong><small>Skip tile flips, letter pops and win sparkles. Your system preference is always respected.</small></span><input type="checkbox" data-setting="reducedMotion" ${settings.reducedMotion ? 'checked' : ''}></label><p class="settings-note">Progress and preferences are stored on this device. Hosting requests are processed by Vercel. <a href="./privacy.html">Read the privacy notice</a>.</p><button class="outline-button danger-button" data-action="clear-data">Clear saved data</button><p class="settings-note">This removes your progress, statistics and settings from this browser.</p>`, 'ODD WORDS / SETTINGS');
 }
 
 function showStats() {
@@ -350,7 +370,7 @@ function tick() {
     daily = dailyPuzzle(phrases, schedule, now);
     dailyRound = createRound(daily.key, daily.phrase);
     if (mode === 'daily') {
-      clearTimeout(timer); clearTimeout(celebrationTimer); stopConfetti();
+      clearTimeout(timer); clearTimeout(celebrationTimer);
       revealing = false; celebrating = ''; message = 'The daily puzzle has refreshed.'; messageError = false;
     }
     sideSignature = ''; persist(); render();
@@ -367,8 +387,8 @@ function toggleSound() {
 }
 
 function resetLocalState(notice) {
-  clearTimeout(timer); clearTimeout(celebrationTimer); stopConfetti(); stopSounds();
-  revealing = false; celebrating = ''; mode = 'daily';
+  clearTimeout(timer); clearTimeout(celebrationTimer); stopSounds();
+  revealing = false; celebrating = ''; mode = 'daily'; showHistory = false; recentTyped = -1;
   history = []; bag = []; freeRound = undefined;
   settings = { sound: false, symbols: true, reducedMotion: false };
   daily = dailyPuzzle(phrases, schedule);
@@ -401,8 +421,10 @@ document.addEventListener('click', (event) => {
   if (action === 'reload') { location.reload(); return; }
   if (action === 'close') { $('#modal').close(); return; }
   if (action === 'help') { showHelp(); return; }
+  if (action === 'menu') { if (ready) showMenu(); return; }
   if (!ready) return;
   if (action === 'type') focusNativeInput();
+  if (action === 'history') { showHistory = !showHistory; renderBoard(); }
   if (action === 'sound') toggleSound();
   if (action === 'clear-data') confirmClearData();
   if (action === 'confirm-clear') {
